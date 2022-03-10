@@ -1,0 +1,188 @@
+.form-elements {
+    line-height: 18px;
+    color: #ccc;
+    i {
+        font-style: normal;
+    }
+    .drop-down {
+        border: #ccc 1px solid;
+        padding: 0px 15px 0 5px;
+        position: relative;
+        z-index: 1;
+        font-weight: bold;
+        &:after {
+            position: absolute;
+            top: 5px;
+            right: 3px;
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-width: 5px 3px 0px 3px;
+            border-style: solid solid solid solid;
+            border-color: #999 transparent transparent transparent;
+        }
+    }
+    .input {
+        border: #ccc 1px solid;
+        padding: 0px 8px;
+        background-color: #fff;
+    }
+    .button {
+        background-color: #ccc;
+        border-radius: 3px;
+        padding: 0px 5px;
+        color: #fff;
+        &.active {
+            background-color: #20b477;
+        }
+    }
+    .tab {
+        color: #ccc;
+        display: inline-block;
+        padding: 1px 0;
+        i {
+            display: inline-block;
+            padding: 0 10px;
+            border-bottom: #ccc 1px solid;
+        }
+        strong {
+            color: #333;
+            display: inline-block;
+            padding: 0 10px;
+            border: #ccc 1px solid;
+            border-bottom: 0;
+        }
+    }
+    .radio {
+        color: #ccc;
+        display: inline-block;
+        padding: 1px 0;
+        i {
+            display: inline-block;
+            margin-right: 15px;
+            &:before {
+                content: '⊙';
+            }
+        }
+        strong {
+            color: #333;
+            display: inline-block;
+            margin-right: 15px;
+            &:before {
+                content: '◉';
+                font-weight: normal;
+            }
+        }
+    }
+    .checkbox {
+        color: #ccc;
+        display: inline-block;
+        padding: 1px 0;
+        i {
+            display: inline-block;
+            margin-right: 15px;
+            &:before {
+                content: '▢';
+            }
+        }
+
+        strong {
+            color: #333;
+            display: inline-block;
+            margin-right: 15px;
+            &:before {
+                content: '▣';
+                font-weight: normal;
+            }
+        }
+    }
+    .table {
+        display: inline-flex;
+        .col {
+            border-top: #ccc 1px solid;
+            border-right: #ccc 1px solid;
+            border-bottom: #ccc 1px solid;
+            flex: 1 1 auto;
+            &:nth-child(1) {
+                border-left: #ccc 1px solid;
+            }
+            strong {
+                display: block;
+                padding: 0 5px;
+                text-align: center;
+            }
+            i {
+                display: block;
+                border-top: #ccc 1px solid;
+                padding: 0 5px;
+                min-height: 16px;
+                white-space: nowrap;
+            }
+        }
+    }
+    .list {
+        display: inline-block;
+        &.left, &.right, &.top, &.bottom {
+            position: absolute;
+            z-index: 2;
+            .list-wrapper {
+                position: absolute;
+                z-index: 3;
+            }
+        }
+        &.left .list-wrapper {
+            top: 0;
+            right: 5px;
+        }
+        .list-wrapper {
+            border-top: #ccc 1px solid;
+            border-bottom: #ccc 1px solid;
+            background-color: #eee;
+            .list-item {
+                .item-title {
+                    border-bottom: #ccc 1px solid;
+                    display: block;
+                    padding: 2px 10px;
+                    i {
+                        background-color: #20b477;
+                        color: #fff;
+                        border-radius: 10px;
+                        margin-left: 20px;
+                        padding: 0 3px;
+                    }
+                    &:last-child {
+                        border: 0;
+                    }
+                }
+                .sub-box {
+                    display: block;
+                    i {
+                        display: block;
+                        border-bottom: #ccc 1px solid;
+                        position: relative;
+                        padding: 1px 10px 1px 20px;
+                        &.active {
+                            color: #20b477;
+                        }
+                        &.active:before {
+                            position: absolute;
+                            top: 6px;
+                            left: 10px;
+                            content: '';
+                            display: block;
+                            width: 0;
+                            height: 0;
+                            border-width: 3px 0px 3px 6px;
+                            border-style: solid solid solid solid;
+                            border-color: transparent transparent transparent #20b477;
+                        }
+                        &:last-child {
+                            border: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
