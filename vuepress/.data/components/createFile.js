@@ -55,6 +55,6 @@ pageClass: theme-item
 </div>
 ${contentHeader}
 <div class="static-content">
-/n${staticContent}
+\n${staticContent}
 </div>`)
 }
