@@ -12,8 +12,9 @@ DEPLOY_THEME.forEach(res => {
 
 console.log('\n');
 editJson(path.join(CWD, 'package.json'), pkg => {
-    pkg.scripts['update-assets']   = 'node .deploy/update-assets.js'
+    pkg.scripts['update:assets'] = 'node .deploy/update-assets.js'
 })
-console.log('npm run update-assets 创建DATA到MD')
+
+console.log('npm run update:assets 更新站点资源')
 
 console.log('\n');
