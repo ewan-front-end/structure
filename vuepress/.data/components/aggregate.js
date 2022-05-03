@@ -1,4 +1,5 @@
 const Path = require("path")
+const chalk = require('chalk')
 const { writeFile } = require('../../.utils/fs.js')
 const LINKS = require('../.LINKS.json') || {}
 let hasNewAnchor = false
@@ -14,7 +15,9 @@ module.exports = (code, path) => {
         code = code.replace(RegExp.$1, `<a id="${RegExp.$3}" class="anchor"><img :src="$withBase('/images/anchor4.png')"><span>${RegExp.$2}</span><span>#${RegExp.$3}</span></a>`)
         hasNewAnchor = true
     }
-    if (hasNewAnchor) writeFile(Path.resolve(__dirname, '../.LINKS.json'), LINKS)
+    if (hasNewAnchor) writeFile(Path.resolve(__dirname, '../.LINKS.json'), LINKS, path => {
+        console.log(chalk.gray('创建 ' + path))
+    })
 
     /**
      * 链接引用

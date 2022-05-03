@@ -6,5 +6,5 @@ const CWD = process.cwd();
 DEPLOY_ASSETS.forEach(res => {
     let from = path.join(CWD, res[0].trim()), to = path.join(CWD, res[1].trim())
     copySync(from, to)
-    console.log(res[0] + ' > ' + res[1] + '  ' + res[2])
+    console.log(chalk.gray('部署 ' + res[0] + ' 到 ') + chalk.white(res[1]) + chalk.gray('  ' + res[2]))
 })

@@ -1,4 +1,5 @@
 const Path= require("path")
+const chalk = require('chalk')
 const { writeFile } = require('../../.utils/fs.js')
 const SUPER_BLOCK = require('../SUPER_BLOCK.js')
 /**
@@ -64,7 +65,9 @@ module.exports = (code, path) => {
         SUPER_BLOCK[SUPER_BLOCK_NAME] = RegExp.$2
         superCodeCount++
     }
-    writeFile(Path.resolve(__dirname, '../SUPER_BLOCK.js'), 'module.exports = ' + JSON.stringify(SUPER_BLOCK, null, 4))
+    writeFile(Path.resolve(__dirname, '../SUPER_BLOCK.js'), 'module.exports = ' + JSON.stringify(SUPER_BLOCK, null, 4), path => {
+        console.log(chalk.gray('创建 ' + path))
+    })
 
     // 通用链接
     //code = Anchor.parseAnchor(code, path) // 锚点

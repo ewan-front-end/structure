@@ -1,4 +1,5 @@
 const PATH = require('path')
+const chalk = require('chalk')
 const { writeFile, readFile } = require('../../.utils/fs.js')
 const parseCode = require('./parseCode')
 
@@ -56,5 +57,7 @@ pageClass: theme-item
 ${contentHeader}
 <div class="static-content">
 \n${staticContent}
-</div>`)
+</div>`, path => {
+    console.log(chalk.gray('创建 ' + path))
+})
 }
