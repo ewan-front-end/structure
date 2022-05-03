@@ -16,10 +16,12 @@ editJson(path.join(CWD, 'package.json'), pkg => {
     pkg.scripts['data:watch']  = 'node docs/.data/data-watch.js'
     pkg.scripts['res:create']  = 'node docs/.data/res-create.js'
     pkg.scripts['res:watch']   = 'node docs/.data/res-watch.js'
+}, path => {
+    console.log(chalk.gray('\n修改 ' + path))
+    console.log(chalk.green('\n--------------------'))
+    console.log(chalk.green('npm run data:create') + '  创建DATA到MD')
+    console.log(chalk.green('npm run data:watch') + '   监听数据变化创建DATA到MD')
+    console.log(chalk.green('npm run res:create') + '   创建MD到DOC')
+    console.log(chalk.green('npm run res:watch') + '    监听MD变化创建MD到DOC')
+    console.log(chalk.green('--------------------\n'))
 })
-console.log(chalk.green('\n--------------------'))
-console.log(chalk.green('npm run data:create') + '  创建DATA到MD')
-console.log(chalk.green('npm run data:watch') + '   监听数据变化创建DATA到MD')
-console.log(chalk.green('npm run res:create') + '   创建MD到DOC')
-console.log(chalk.green('npm run res:watch') + '    监听MD变化创建MD到DOC')
-console.log(chalk.green('--------------------\n'))
