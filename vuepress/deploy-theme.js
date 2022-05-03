@@ -18,7 +18,7 @@ console.log(chalk.green('\n--------------------'))
 console.log(chalk.green('npm run update:assets') + '  更新站点资源')
 console.log(chalk.green('--------------------\n'))
 
-console.log(chalk.blue(`默认主题结构
+console.log(chalk.gray(`默认主题结构
 ├── global-components           该目录下的组件都会被自动注册为全局组件
 │   └── xxx.vue
 ├── components                  普通Vue组件
