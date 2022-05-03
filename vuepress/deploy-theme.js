@@ -8,17 +8,17 @@ console.log('\n');
 DEPLOY_THEME.forEach(res => {
     let from = path.join(CWD, res[0].trim()), to = path.join(CWD, res[1].trim())
     copySync(from, to)
-    console.log(res[0] + ' > ' + res[1] + '  ' + res[2])
+    console.log(chalk.gray('部署 ' + res[0] + ' 到 ') + chalk.white(res[1]) + chalk.gray('  ' + res[2]))
 })
 
-console.log('\n');
 editJson(path.join(CWD, 'package.json'), pkg => {
     pkg.scripts['update:assets'] = 'node .deploy/update-assets.js'
 })
+console.log(chalk.green('\n--------------------'))
+console.log(chalk.green('npm run update:assets') + '  更新站点资源')
+console.log(chalk.green('--------------------\n'))
 
-console.log('npm run update:assets 更新站点资源')
-
-console.log(chalk.blue(`\n默认主题结构
+console.log(chalk.blue(`默认主题结构
 ├── global-components           该目录下的组件都会被自动注册为全局组件
 │   └── xxx.vue
 ├── components                  普通Vue组件
