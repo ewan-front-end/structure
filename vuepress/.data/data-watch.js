@@ -29,7 +29,6 @@ function compareDiff(oNode, nNode, key, parentPath) {
             handleDataChildren(oNode.children, nNode.children, path)
         } else {
             diffPath[path] = true
-            diffPath[parentPath + '/'] = true
             addChildren(nNode.children, path)
         }
     }
