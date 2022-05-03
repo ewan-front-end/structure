@@ -12,6 +12,6 @@ module.exports = (path, node) => {
     }
     content = `---\nsidebar: false\n---\n\n<div class="root-children brick-wall">\n\n${childStr}\n</div>\n\n## 文档地图\n` + content
     writeFile(path + '.md', content, path => {
-        console.log(chalk.gray('创建 ' + path))
+        console.log(chalk.gray('创建 ' + path + '\n'))
     })
 }

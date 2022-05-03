@@ -58,6 +58,6 @@ ${contentHeader}
 <div class="static-content">
 \n${staticContent}
 </div>`, path => {
-    console.log(chalk.gray('创建 ' + path))
+    console.log(chalk.gray('创建 ' + path + '\n'))
 })
 }
