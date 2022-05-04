@@ -1,7 +1,6 @@
 const Path= require("path")
 const chalk = require('chalk')
 const { writeFile } = require('../../.utils/src/fs.js')
-const SUPER_BLOCK = require('../SUPER_BLOCK.js')
 /**
 * 弹性盒子
 * 目标：<div class="box-flex"><div class="box-flex-item flex-8">col 01</div><div class="box-flex-item classname" style="flex-basis:100px">col 02</div></div>
@@ -57,34 +56,18 @@ module.exports = (code, path) => {
     code = code.replace(/\{\{/g, `{TEMPLATE{`)
     code = code.replace(/\}\}/g, `}TEMPLATE}`)
 
-    // 超级代码块
-    let superCodeMatch, superCodeCount = 0
-    while ((superCodeMatch = /(✪([\s\S]+?)✪)/.exec(code)) !== null) {
-        const SUPER_BLOCK_NAME = 'SUPER_BLOCK_' + superCodeCount + 'A'
-        code = code.replace(RegExp.$1, SUPER_BLOCK_NAME)
-        SUPER_BLOCK[SUPER_BLOCK_NAME] = RegExp.$2
-        superCodeCount++
-    }
-    writeFile(Path.resolve(__dirname, '../SUPER_BLOCK.js'), 'module.exports = ' + JSON.stringify(SUPER_BLOCK, null, 4), path => {
-        // console.log(chalk.gray('创建 ' + path))
-    })
-
     // 通用链接
     //code = Anchor.parseAnchor(code, path) // 锚点
     //code = Anchor.parseTitle(code, path)  // 标题
     //code = Anchor.parseLink(code)
-
+    
     code = parseCustomBlock.start(code, path)
-
     code = parseFlex(code) // 弹性盒子
     code = parseUML(code)  // 图例
 
     code = parseCustomBlock.end(code)
 
     //Anchor.save() // 保存链接数据
-    // for (let key in SUPER_BLOCK) {
-    //     code = code.replace(key, SUPER_BLOCK[key])
-    // }
-
+    
     return code
 }
