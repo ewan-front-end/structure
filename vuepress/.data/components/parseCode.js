@@ -66,7 +66,7 @@ module.exports = (code, path) => {
         superCodeCount++
     }
     writeFile(Path.resolve(__dirname, '../SUPER_BLOCK.js'), 'module.exports = ' + JSON.stringify(SUPER_BLOCK, null, 4), path => {
-        console.log(chalk.gray('创建 ' + path))
+        // console.log(chalk.gray('创建 ' + path))
     })
 
     // 通用链接

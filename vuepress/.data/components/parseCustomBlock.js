@@ -1,14 +1,16 @@
 
 //const Search = fetch('PARSE|search')
 //const Aggregate = fetch('PARSE|aggregate')
+const parseTree = require('./parseTree.js')
 const { regexpPresetParse, PRESET_CSS } = require('./regexp-preset')
-
+const aggregate = require('./aggregate.js')
 let TAG_MAP_BLOCK = {}, blockCount = 0
 const REG_STYLE_STR = `(\\{[\\w\\s-;:'"#]+\\})?` // color: #f00; font-size: 14px
 const REG_CLASS_STR = `(\\([\\w\\s-]+\\))?`      // bd sz-16 c-0
 
 function parseCustomBlock(block, path) {
     block = block.replace(/\</g, "&lt;").replace(/\>/g, "&gt;")
+    block = aggregate(block, path)
 
     // ❖ 项目Project
     if (/(❖\s项目Project)/.exec(block)) {
@@ -19,6 +21,9 @@ function parseCustomBlock(block, path) {
     //block = Aggregate.pick(block, 'vuepress')
 
     ////////////////////////////////// 不会再有嵌套的格式优先解析，避免匹配到多余的其它格式的字符
+
+
+
     /**
      * 行注释
      * 多匹配一个前置空格 替换时空格移到标签 防止被全等注释二次替换
@@ -28,15 +33,15 @@ function parseCustomBlock(block, path) {
      */
     const matchComment = block.match(/\s\d?\/\/[^\n\r]+/g) || [];
     matchComment.forEach(e => {
-        let colorClass = '', _e = e.trim(), firstWord = _e.substr(0,1)
-        if (!isNaN(firstWord)) {_e = _e.replace(firstWord, ''); colorClass = ' color' + firstWord}
+        let colorClass = '', _e = e.trim(), firstWord = _e.substr(0, 1)
+        if (!isNaN(firstWord)) { _e = _e.replace(firstWord, ''); colorClass = ' color' + firstWord }
         block = block.replace(e, ` <span class="comment${colorClass}">${_e}</span>`)
     })
     // /* 注释 */
     const matchComment2 = block.match(/\d?\/\*[\s\S]*?\*\//g) || [];
     matchComment2.forEach(e => {
-        let firstWord = e.substr(0,1), colorClass = '', _e = e
-        if (!isNaN(firstWord)) {_e = _e.replace(firstWord, ''); colorClass = ' color' + firstWord}
+        let firstWord = e.substr(0, 1), colorClass = '', _e = e
+        if (!isNaN(firstWord)) { _e = _e.replace(firstWord, ''); colorClass = ' color' + firstWord }
         block = block.replace(e, `<span class="comment${colorClass}">${_e}</span>`)
     })
     // <!-- HTML注释 -->
@@ -67,7 +72,7 @@ function parseCustomBlock(block, path) {
      * 运行命令
      * hello> npm run dev
      */
-    while (/^\x20*(([\w-\/]+)\&gt;)\s[^\r\n]+/m.exec(block) !== null) {
+    while (/^\x20*(([\w-\/\\:\.▹◃]+)\&gt;)\s[^\r\n]+/m.exec(block) !== null) {
         block = block.replace(RegExp.$1, `<span class="run-command">${RegExp.$2}</span>`)
     }
 
@@ -75,7 +80,7 @@ function parseCustomBlock(block, path) {
      * 点缀集
      * 1►text◄ 2►text◄ ❶❷❸❹❺❻❼❽❾❿►text◄
      */
-    const orderMap = {"❶": 1, "❷": 2, "❸": 3, "❹": 4,"❺": 5,"❻": 6,"❼": 7,"❽": 8,"❾": 9,"❿": 10}
+    const orderMap = { "❶": 1, "❷": 2, "❸": 3, "❹": 4, "❺": 5, "❻": 6, "❼": 7, "❽": 8, "❾": 9, "❿": 10 }
     while (/((\d)?([❶❷❸❹❺❻❼❽❾❿])?►([^◄]+)◄)/.exec(block) !== null) {
         let className = 'i' + (RegExp.$2 || 0)
         if (RegExp.$3) className = 'order' + orderMap[RegExp.$3]
@@ -85,7 +90,11 @@ function parseCustomBlock(block, path) {
     /**
      * Detail
      * 突出简介隐藏详情
-     * .vuepress/theme/layouts/Layout.vue
+     * -----------
+     * 标题 ▾ 说明
+     *   ↧↥
+     * -----------
+     * 事件处理：.vuepress/theme/layouts/Layout.vue
         mounted () {
             const $details = document.querySelectorAll('.fold-detail')
             $details.forEach(dom => {
@@ -97,15 +106,96 @@ function parseCustomBlock(block, path) {
         }
      */
     const REG_DETAIL_STR = regexpPresetParse([
-        {DETAIL_FORMAT: [{DETAIL_INDENT: `\\x20*`}, {TITLE: `.+`}, `\\s▾`, {STYLE: REG_STYLE_STR}, {COMMENT:`[^\\n]*`}, `[\\r\\n]`, {CONTENT_INDENT: `\\x20*`}, `↧`, {CONTENT: `[^↥]+`}, `↥`]}
+        { DETAIL_FORMAT: [{ DETAIL_INDENT: `\\x20*` }, { TITLE: `.+?` }, {SPACE: `\\s+`}, `▾`, { STYLE: REG_STYLE_STR }, { COMMENT: `[^\\n]*` }, `[\\r\\n]`, { CONTENT_INDENT: `\\x20*` }, `↧`, { CONTENT: `[^↥]+` }, `↥`] }
     ])
     const REG_DETAIL = new RegExp(REG_DETAIL_STR.value)
     // const REG_DETAIL = /(?<DETAIL_FORMAT>((?<DETAIL_INDENT>\x20*)(?<TITLE>.+)\s▾(?<STYLE>(\{[\w\s-;:'"#]+\})?)(?<COMMENT>\s*(.+)?)[\r\n](?<CONTENT_INDENT>\x20*)↧(?<CONTENT>[^↥]+)↥))/
     let detailMatch
     while ((detailMatch = REG_DETAIL.exec(block)) !== null) {
-        let {DETAIL_FORMAT, DETAIL_INDENT, TITLE, STYLE, COMMENT, CONTENT_INDENT, CONTENT} =  detailMatch.groups, descStyle = 'class="detail-desc"'
+        let { DETAIL_FORMAT, DETAIL_INDENT, TITLE, SPACE, STYLE, COMMENT, CONTENT_INDENT, CONTENT } = detailMatch.groups, descStyle = 'class="detail-desc"'
         if (STYLE) descStyle += ` style="${STYLE.replace('{', '').replace('}', '')}"`
-        block = block.replace(DETAIL_FORMAT, `<div class="fold-detail">${DETAIL_INDENT}<span ${descStyle}>${TITLE}</span><span class="comment">${COMMENT}</span><div class="detail-content">${CONTENT_INDENT}<span>${CONTENT}</span></div></div>`)
+        block = block.replace(DETAIL_FORMAT, `<div class="fold-detail sty${SPACE.length}">${DETAIL_INDENT}<span ${descStyle}>${TITLE}</span><span class="comment">${COMMENT}</span><div class="detail-content">${CONTENT_INDENT}<span>${CONTENT}</span></div></div>`)
+    }
+
+    /**
+     * Tree
+     * ------------------
+     * 第一层  注释说明
+     *     第二层  注释说明
+     *     第二层  注释说明
+     *         第三层  注释说明 
+     *             第四层  注释说明
+     *         第三层  注释说明
+     *     第二层  注释说明
+     *         第三层  注释说明
+     * 第一层  注释说明
+     * ------------------
+     * 更多选项：ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ
+     * 事件处理：
+     */
+    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓔ([^Ⓔ]+)Ⓔ)/.exec(block) !== null) {
+    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
+    //     let boxClassName = CLOSE ? `tree level5 close` : `tree level5`,
+    //         arr = TITLE.split(' | '),
+    //         titHtml = `<span class="title">${arr[0]}</span>`,
+    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
+    //         content = RegExp.$6
+    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
+    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
+    // }
+    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓓ([^Ⓓ]+)Ⓓ)/.exec(block) !== null) {
+    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
+    //     let boxClassName = CLOSE ? `tree level4 close` : `tree level4`,
+    //         arr = TITLE.split(' | '),
+    //         titHtml = `<span class="title">${arr[0]}</span>`,
+    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
+    //         content = RegExp.$6
+    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
+    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
+    // }
+    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓒ([^Ⓒ]+)Ⓒ)/.exec(block) !== null) {
+    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
+    //     let boxClassName = CLOSE ? `tree level3 close` : `tree level3`,
+    //         arr = TITLE.split(' | '),
+    //         titHtml = `<span class="title">${arr[0]}</span>`,
+    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
+    //         content = RegExp.$6
+    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
+    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
+    // }
+    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓑ([^Ⓑ]+)Ⓑ)/.exec(block) !== null) {
+    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
+    //     let boxClassName = CLOSE ? `tree level2 close` : `tree level2`,
+    //         arr = TITLE.split(' | '),
+    //         titHtml = `<span class="title">${arr[0]}</span>`,
+    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
+    //         content = RegExp.$6
+    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
+    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
+    // }
+    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓐ([^Ⓐ]+)Ⓐ)/.exec(block) !== null) {
+    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
+    //     let boxClassName = CLOSE ? `tree level1 close` : `tree level1`,
+    //         arr = TITLE.split(' | '),
+    //         titHtml = `<span class="title">${arr[0]}</span>`,
+    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
+    //         content = RegExp.$6
+    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
+    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
+    // }
+
+    // Tree结构解析
+    block = parseTree(block)
+
+    // 外观盒子
+    while (/(\[BOX(:\w+)?\]\x20*[\n\r]{1,2}(\x20*)([\s\S]+?)[\n\r]{1,2}\x20*?\[BOX\])/.exec(block) !== null) {
+        let ALL = RegExp.$1, TYPE = RegExp.$2, INDENT = RegExp.$3, CONTENT = RegExp.$4, className = 'box'
+        if (INDENT && INDENT.length > 0) {
+            let reg = new RegExp(`^\\x20{${INDENT.length}}`, 'mg')
+            CONTENT = CONTENT.replace(reg, '')
+        }
+        if (TYPE) className += TYPE.replace(':', '').toLowerCase()
+        block = block.replace(ALL, `<span class="${className}">${CONTENT}</span>`)
     }
 
     /**
@@ -141,25 +231,27 @@ function parseCustomBlock(block, path) {
      */
     const REG_TIT_STR = regexpPresetParse([
         `\\x20*`,                   // 0任意空格
-        {FORMAT: [
-            {INVERT: `\\[?`},       // 反相开始 [
-            {LEVEL: `#{2,6}`},      // 标题字号 #-######
-            `\\]?`,                 // 反相结束 ]
-            {STYLE: REG_STYLE_STR}, // 区配样式 {color: #fff}
-            {CLASS: REG_CLASS_STR}, // 匹配类名 (bd)
-            `\\s`,                  // 一个空格
-            {TEXT: `[^\\n\\r\\{]+`} // 标题文本
-        ]}
+        {
+            FORMAT: [
+                { INVERT: `\\[?` },       // 反相开始 [
+                { LEVEL: `#{2,6}` },      // 标题字号 #-######
+                `\\]?`,                 // 反相结束 ]
+                { STYLE: REG_STYLE_STR }, // 区配样式 {color: #fff}
+                { CLASS: REG_CLASS_STR }, // 匹配类名 (bd)
+                `\\s`,                  // 一个空格
+                { TEXT: `[^\\n\\r\\{]+` } // 标题文本
+            ]
+        }
     ])
     const REG_TIT = new RegExp(REG_TIT_STR.value)
     let titMatch
     while ((titMatch = REG_TIT.exec(block)) !== null) {
-        let {FORMAT, INVERT, LEVEL, STYLE, CLASS, TEXT} =  titMatch.groups
+        let { FORMAT, INVERT, LEVEL, STYLE, CLASS, TEXT } = titMatch.groups
         let classStr = `h${LEVEL.length}`
         if (INVERT) {
             classStr += ' bg3 cf'
             if (TEXT[0] !== ' ') TEXT = ' ' + TEXT
-            if (TEXT[TEXT.length-1] !== ' ') TEXT = TEXT + ' '
+            if (TEXT[TEXT.length - 1] !== ' ') TEXT = TEXT + ' '
         }
         CLASS && (classStr += ' ' + CLASS.replace('(', '').replace(')', ''))
         let str = `class="${classStr}"`, content = TEXT
@@ -271,58 +363,62 @@ function parseCustomBlock(block, path) {
             })
             content = content.replace($ALL, `<span class="${className}"${styleStr}><div class="list-wrapper">${html}</div></span>`)
         }
-        /**
-         * 表格
-         * ▦⇤VARIABLE(变量){color:26f}  INITIAL VALUE(初始值)  CURRENT VALUE(当前值)
-         *     API{color:26f}  https://api.com:4432  https://api.com:4432
-         * ▦
-         */
-        while (/((\x20*)▦(⇤?)([\s\S]+?)[\r\n]+\x20*▦)/.exec(content) !== null) {
-            const $FORMAT = RegExp.$1, $INDENT = RegExp.$2, $SET_FLUSH = RegExp.$3, $CONTENT = RegExp.$4
-            let tableHtml = ''
-            const lines = $CONTENT.split(/\x20*[\r\n]+\x20*/)
-            const header = lines.splice(0, 1)[0].split(/\s{2,}/)
-            const colArr = [], colsNum = header.length
-            header.forEach(tit => {
-                let hasStyle = tit.match(/\{([\w\s-;:'"#]+)\}/), styleStr = ''
-                if (hasStyle) {
-                    styleStr = ` style="${hasStyle[1]}"`
-                    tit = tit.replace(/\{([\w\s-;:'"#]+)\}/, '')
-                }
-                colArr.push(`<strong>${tit}</strong>`)
-            })
-            lines.forEach(line => {
-                const valArr = line.split(/\s{2,}/)
-                for (let i = 0; i < colsNum; i++){
-                    let val = valArr[i] || '', hasStyle = val.match(/\{([\w\s-;:'"#]+)\}/), styleStr = ''
-                    if (hasStyle) {
-                        styleStr = ` style="${hasStyle[1]}"`
-                        val = val.replace(/\{([\w\s-;:'"#]+)\}/, '')
-                    }
-                    colArr[i] += `<i${styleStr}>${val}</i>`
-                }
-            })
-            colArr.forEach(col => {
-                tableHtml += `<span class="col">${col}</span>`
-            })
-            content = content.replace($FORMAT, `<span class="table">${tableHtml}</span>`)
-        }
-
+        
         block = block.replace(e, `<div class="form-elements">${content}</div>`)
     })
+
+    /**
+     * 表格
+     * ▦⇤VARIABLE(变量){color:26f}  INITIAL VALUE(初始值)  CURRENT VALUE(当前值)
+     *     API{color:26f}  https://api.com:4432  https://api.com:4432
+     * ▦
+     */
+     while (/(▦([^▦]+)▦)/.exec(block) !== null) {
+        const $FORMAT = RegExp.$1, $CONTENT = RegExp.$2
+        let tableHtml = ''
+        const lines = $CONTENT.split(/\x20*[\r\n]+\x20*/)
+        const header = lines.splice(0, 1)[0].split(/\s{2,}/)
+        const colArr = [], colsNum = header.length
+        header.forEach(tit => {
+            let hasStyle = tit.match(/\{([\w\s-;:'"#]+)\}/), styleStr = ''
+            if (hasStyle) {
+                styleStr = ` style="${hasStyle[1]}"`
+                tit = tit.replace(/\{([\w\s-;:'"#]+)\}/, '')
+            }
+            colArr.push(`<strong>${tit}</strong>`)
+        })
+        lines.forEach(line => {
+            const valArr = line.split(/\s{2,}/)
+            for (let i = 0; i < colsNum; i++) {
+                let val = valArr[i] || '', hasStyle = val.match(/\{([\w\s-;:'"#]+)\}/), styleStr = ''
+                if (val.match(/^-+$/m)) val = '&nbsp;'
+                if (hasStyle) {
+                    styleStr = ` style="${hasStyle[1]}"`
+                    val = val.replace(/\{([\w\s-;:'"#]+)\}/, '')
+                }
+                colArr[i] += `<i${styleStr}>${val}</i>`
+            }
+        })
+        colArr.forEach(col => {
+            tableHtml += `<span class="col">${col}</span>`
+        })
+        block = block.replace($FORMAT, `<span class="table">${tableHtml}</span>`)
+    }
 
     // 行样式[{color:#f00}(bd)]
     const REG_LINE_STYLE_STR = regexpPresetParse([
         `^\\x20*`,           // 行缩进
-        {CONTENT_FORMAT: [
-            {CONTENT: `.+`}, // 格式内容
-            {STYLE_FORMAT: [`\\[`, PRESET_CSS, `\\]`]}
-        ]}
+        {
+            CONTENT_FORMAT: [
+                { CONTENT: `.+` }, // 格式内容
+                { STYLE_FORMAT: [`\\[`, PRESET_CSS, `\\]`] }
+            ]
+        }
     ])
     const REG_LINE_STYLE = new RegExp(REG_LINE_STYLE_STR.value, 'gm')
     let lineStyleMatch
     while ((lineStyleMatch = REG_LINE_STYLE.exec(block)) !== null) {
-        let {CONTENT_FORMAT, CONTENT, CSS, CSS_1, CSS_2} = lineStyleMatch.groups, cssStr = ''
+        let { CONTENT_FORMAT, CONTENT, CSS, CSS_1, CSS_2 } = lineStyleMatch.groups, cssStr = ''
         if (CSS_1) {
             let text = CSS_1.substr(1, CSS_1.length - 2)
             cssStr += CSS_1.includes('{') ? ` style="${text}"` : ` class="${text}"`
@@ -335,11 +431,11 @@ function parseCustomBlock(block, path) {
     }
 
     // [盒样式{color:#f00}(bd)] 适合单行行内点缀
-    const REG_BOX_STYLE_STR = regexpPresetParse([{BOX_FORMAT: [`\\[`, {CONTENT: `[^\\{\\}\\[\\]\\(\\)]+`}, PRESET_CSS, `\\]` ]}])
+    const REG_BOX_STYLE_STR = regexpPresetParse([{ BOX_FORMAT: [`\\[`, { CONTENT: `[^\\{\\}\\[\\]\\(\\)]+` }, PRESET_CSS, `\\]`] }])
     const REG_BOX_STYLE = new RegExp(REG_BOX_STYLE_STR.value, 'gm')
     let boxStyleMatch
     while ((boxStyleMatch = REG_BOX_STYLE.exec(block)) !== null) {
-        let {BOX_FORMAT, CONTENT, CSS, CSS_1, CSS_2} = boxStyleMatch.groups, cssStr = ''
+        let { BOX_FORMAT, CONTENT, CSS, CSS_1, CSS_2 } = boxStyleMatch.groups, cssStr = ''
         if (CSS_1) {
             let text = CSS_1.substr(1, CSS_1.length - 2)
             cssStr += CSS_1.includes('{') ? ` style="${text}"` : ` class="${text}"`
@@ -350,12 +446,13 @@ function parseCustomBlock(block, path) {
         }
         block = block.replace(BOX_FORMAT, `<span${cssStr}>${CONTENT}</span>`)
     }
+
     // 【盒样式】{color:#f00}(bd) 适合多行大段格式化
-    const REG_BOX_STYLE_STR2 = regexpPresetParse([{BOX_FORMAT: [`【`, {CONTENT: `[^】]+`}, `】`, PRESET_CSS]}])
+    const REG_BOX_STYLE_STR2 = regexpPresetParse([{ BOX_FORMAT: [`【`, { CONTENT: `[^】]+` }, `】`, PRESET_CSS] }])
     const REG_BOX_STYLE2 = new RegExp(REG_BOX_STYLE_STR2.value, 'gm')
     let boxStyleMatch2
     while ((boxStyleMatch2 = REG_BOX_STYLE2.exec(block)) !== null) {
-        let {BOX_FORMAT, CONTENT, CSS, CSS_1, CSS_2} = boxStyleMatch2.groups, cssStr = ''
+        let { BOX_FORMAT, CONTENT, CSS, CSS_1, CSS_2 } = boxStyleMatch2.groups, cssStr = ''
         if (CSS_1) {
             let text = CSS_1.substr(1, CSS_1.length - 2)
             cssStr += CSS_1.includes('{') ? ` style="${text}"` : ` class="${text}"`
@@ -374,9 +471,26 @@ function parseCustomBlock(block, path) {
     while (/(\x20*)(■(⇤?)(\([\w\s-]+\))?(\{[\w\s-;:'"#]+\})?(\([\w\s-]+\))?(\x20*[\r\n]+)?([\s\S]+?)■)/.exec(block) !== null) {
         const $INDENT = RegExp.$1, $FORMAT = RegExp.$2, $SET_FLUSH = RegExp.$3, $CLASS = RegExp.$4 || RegExp.$6, $STYLE = RegExp.$5, $CONTENT = RegExp.$8
         let str = ''
-        $CLASS && (str += ` class=${$CLASS.replace('(','"').replace(')','"')}`)
-        $STYLE && (str += ` style=${$STYLE.replace('{','"').replace('}','"')}`)
+        $CLASS && (str += ` class=${$CLASS.replace('(', '"').replace(')', '"')}`)
+        $STYLE && (str += ` style=${$STYLE.replace('{', '"').replace('}', '"')}`)
         block = block.replace($FORMAT, `<div${str}>${$CONTENT}</div>`)
+    }
+
+    /**
+     * 变量绑定
+     */
+    let matchFeild
+    while ((matchFeild = /(?<ALL>\x20*◢(?<OBJ>\[[^\]]+\])\x20*[\r\n]+(?<CONTENT>[\s\S]+?)◣)/.exec(block)) !== null) {
+        let {ALL, OBJ, CONTENT} = matchFeild.groups
+        let arr = JSON.parse(OBJ) || []
+        let inputHtml = ``
+        arr.forEach(({key, label, value, color}) => {
+            const reg = new RegExp(`▹${key}◃`, 'g')
+            const valHtml = color ? `<span style="font-weight:bold; color:${color}" class="observe_${key}">${value}</span>` : `<span class="observe_${key}">${value}</span>`
+            CONTENT = CONTENT.replace(reg, valHtml)
+            inputHtml += `<div class="list">${label}:<input class="observe" data-key="${key}" style="color:${color || '#ccc'}" value="${value}" /></div>`
+        })
+        block = block.replace(ALL, `<div class="observe-feilds"><div class="feilds-container">${inputHtml}</div></div>${CONTENT}`)
     }
 
     block = block.replace('===+', '\n<pre class="code-block">').replace('===-', '</pre>')
@@ -389,14 +503,14 @@ function parseCustomBlock(block, path) {
 }
 
 module.exports = {
-    start(code, path){
+    start(code, path) {
         const matchCustomBlock = code.match(/===\+[\s\S]+?===\-/g) || []
         matchCustomBlock.forEach((block) => {
             code = code.replace(block, parseCustomBlock(block, path))
         })
         return code
     },
-    end(code){
+    end(code) {
         for (let key in TAG_MAP_BLOCK) {
             code = code.replace(key, TAG_MAP_BLOCK[key])
         }
