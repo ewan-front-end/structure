@@ -18,8 +18,6 @@ const FIRST_DEPLOY = [
     ['.structure/vuepress/.data             ', '.data                       ', '数据体系'],
     ['.structure/vuepress/.vuepress         ', '.vuepress                   ', '默认主题改造'],
     ['.structure/vuepress/assets/favicon.ico', '.vuepress/public/favicon.ico', '资源:网页标签图标'],
-    
-    ['.structure/vuepress/maps.js           ', '.deploy/maps.js             ', '更新地图'],
     ['.structure/vuepress/guidance.js       ', '.deploy/guidance.js         ', '更新引导'],
     ['.structure/vuepress/update-data.js    ', '.deploy/update-data.js      ', '更新:数据体系'],
     ['.structure/vuepress/update-theme.js   ', '.deploy/update-theme.js     ', '更新:默认主题改造'],
