@@ -1,4 +1,4 @@
-const { STATIC_NAV } = require('../../.config.js')
+const { STATIC_NAV } = require('../.config.js')
 
 module.exports = {
     "title": "标题文本",
