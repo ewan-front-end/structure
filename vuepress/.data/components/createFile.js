@@ -1,6 +1,6 @@
 const PATH = require('path')
 const chalk = require('chalk')
-const { writeFile, readFile } = require('../../.utils/fs.js')
+const { writeFile, readFile } = require('../../.utils/src/fs.js')
 const parseCode = require('./parseCode')
 
 module.exports = (fullPath, target) => {
@@ -57,7 +57,7 @@ pageClass: theme-item
 ${contentHeader}
 <div class="static-content">
 \n${staticContent}
-</div>`, path => {
-    console.log(chalk.gray('创建 ' + path + '\n'))
+</div>`, e => {
+    console.log(chalk.gray('创建 docs/' + e.split('/docs/')[1]))
 })
 }

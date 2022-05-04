@@ -1,5 +1,5 @@
 const Path = require('path'), ARG_ARR = process.argv.slice(2)  // 命令参数
-const { mkdirSync } = require('../.utils/fs.js')
+const { mkdirSync } = require('../.utils/src/fs.js')
 const createFile = require('./components/createFile')
 const createHome = require('./components/createHome')
 let data = require('./index')

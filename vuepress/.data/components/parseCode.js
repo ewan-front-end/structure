@@ -1,6 +1,6 @@
 const Path= require("path")
 const chalk = require('chalk')
-const { writeFile } = require('../../.utils/fs.js')
+const { writeFile } = require('../../.utils/src/fs.js')
 const SUPER_BLOCK = require('../SUPER_BLOCK.js')
 /**
 * 弹性盒子
