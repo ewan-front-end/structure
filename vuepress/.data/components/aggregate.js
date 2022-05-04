@@ -1,8 +1,13 @@
 const Path = require("path")
 const chalk = require('chalk')
 const { writeFile } = require('../../.utils/fs.js')
-const LINKS = require('../.LINKS.json') || {}
-let hasNewAnchor = false
+
+let hasNewAnchor = false, LINKS
+try {
+    LINKS = require('../.LINKS.json')
+} catch(e) {
+    LINKS = {}
+}
 
 module.exports = (code, path) => {
     /**
