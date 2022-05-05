@@ -11,7 +11,7 @@ radio('重新部署类型:', [
 
 function deployStructure() {
     const options = []
-    const { DEPLOY_STRUCTURE } = require('../.structure/vuepress/deploy.js')
+    const { DEPLOY_STRUCTURE } = require('../.structure/vuepress/maps.js')
     DEPLOY_STRUCTURE.forEach(res => {
         options.push(res[2])
     })
