@@ -14,7 +14,7 @@ const FIRST_DEPLOY = [
     ['.structure/vuepress/.vuepress         ', '.vuepress                   ', '默认主题改造'],
     ['.structure/vuepress/assets/favicon.ico', '.vuepress/public/favicon.ico', '资源:网页标签图标'],
     ['.structure/vuepress/guidance.js       ', '.deploy/guidance.js         ', '更新引导'],
-    ['.structure/vuepress/update-data.js    ', '.deploy/update.js      ', '更新:数据体系/默认主题/静态资源']
+    ['.structure/vuepress/update.js         ', '.deploy/update.js           ', '更新:数据体系/默认主题/静态资源']
 ]
 
 module.exports = {
