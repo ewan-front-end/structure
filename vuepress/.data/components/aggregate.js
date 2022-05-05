@@ -5,7 +5,7 @@ const { writeFile } = require('../../.utils/src/fs.js')
 let hasNewAnchor = false, LINKS
 try {
     LINKS = require('../.LINKS.json')
-} catch(e) {
+} catch (e) {
     LINKS = {}
 }
 
@@ -20,9 +20,11 @@ module.exports = (code, path) => {
         code = code.replace(RegExp.$1, `<a id="${RegExp.$3}" class="anchor"><img :src="$withBase('/images/anchor4.png')"><span>${RegExp.$2}</span><span>#${RegExp.$3}</span></a>`)
         hasNewAnchor = true
     }
-    if (hasNewAnchor) writeFile(Path.resolve(__dirname, '../.LINKS.json'), LINKS, path => {
-        console.log(chalk.gray('创建 ' + path))
-    })
+    if (hasNewAnchor) {
+        writeFile(Path.resolve(__dirname, '../.LINKS.json'), LINKS, path => {
+            console.log(chalk.gray('创建 ' + path))
+        })
+    }
 
     /**
      * 链接引用
@@ -30,14 +32,15 @@ module.exports = (code, path) => {
      * 例子：[LINK MySQL_install] 或 [LINK MySQL_install:重命名]
      */
     while (/(\[LINK\s([^#:\n\r]+?):?([^#:\n\r]*?)\])/.exec(code) !== null) {
-        const anchor = LINKS[RegExp.$2]
+        const ALL = RegExp.$1, KEY = RegExp.$2, TIT = RegExp.$3
+        const anchor = LINKS[KEY]
         if (anchor) {
-            const pathname = anchor.path.match(/\/$/m) ? anchor.path : anchor.path + '.html'
-            const href = anchor.path === path ? `#${RegExp.$2}` : `${pathname}#${RegExp.$2}`
-            const title = RegExp.$3 || anchor.title
-            code = code.replace(RegExp.$1, `<a href="${href}" target="_blank">${title}</a>`)
+            const pathname = /\/$/m.test(anchor.path) ? anchor.path : anchor.path + '.html'
+            const href = anchor.path === path ? `#${KEY}` : `${pathname}#${KEY}`
+            const title = TIT || anchor.title
+            code = code.replace(ALL, `<a href="${href}" target="_blank">${title}</a>`)
         } else {
-            code = code.replace(RegExp.$1, `锚点[${RegExp.$2}]不存在`)
+            code = code.replace(ALL, `锚点[${KEY}]不存在`)
         }
     }
 

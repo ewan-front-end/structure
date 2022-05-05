@@ -1,3 +1,3 @@
 module.exports = {title: 'Home', src: 'index', path: '', children: {
-    demo: {title: '文档样本'}
+    demo: {title: '文档样本', src:'demo'}
 }}

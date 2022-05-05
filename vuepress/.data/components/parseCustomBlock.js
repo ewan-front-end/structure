@@ -1,28 +1,13 @@
-
-//const Search = fetch('PARSE|search')
-//const Aggregate = fetch('PARSE|aggregate')
 const parseTree = require('./parseTree.js')
 const { regexpPresetParse, PRESET_CSS } = require('./regexp-preset')
 const aggregate = require('./aggregate.js')
-let TAG_MAP_BLOCK = {}, blockCount = 0
+const detail = require('./widgets/detail.js')
 const REG_STYLE_STR = `(\\{[\\w\\s-;:'"#]+\\})?` // color: #f00; font-size: 14px
 const REG_CLASS_STR = `(\\([\\w\\s-]+\\))?`      // bd sz-16 c-0
 
 function parseCustomBlock(block, path) {
     block = block.replace(/\</g, "&lt;").replace(/\>/g, "&gt;")
     block = aggregate(block, path)
-
-    // ❖ 项目Project
-    if (/(❖\s项目Project)/.exec(block)) {
-        block = block.replace(RegExp.$1, `<div>工具</div>`)
-    }
-
-    // 聚合之采集
-    //block = Aggregate.pick(block, 'vuepress')
-
-    ////////////////////////////////// 不会再有嵌套的格式优先解析，避免匹配到多余的其它格式的字符
-
-
 
     /**
      * 行注释
@@ -87,103 +72,7 @@ function parseCustomBlock(block, path) {
         block = block.replace(RegExp.$1, `<i class="${className}">${RegExp.$4}</i>`)
     }
 
-    /**
-     * Detail
-     * 突出简介隐藏详情
-     * -----------
-     * 标题 ▾ 说明
-     *   ↧↥
-     * -----------
-     * 事件处理：.vuepress/theme/layouts/Layout.vue
-        mounted () {
-            const $details = document.querySelectorAll('.fold-detail')
-            $details.forEach(dom => {
-                dom.addEventListener('click', e => {
-                    let tar = e.currentTarget
-                    tar.className = tar.className === 'fold-detail' ? 'fold-detail active' : 'fold-detail'
-                })
-            })
-        }
-     */
-    const REG_DETAIL_STR = regexpPresetParse([
-        { DETAIL_FORMAT: [{ DETAIL_INDENT: `\\x20*` }, { TITLE: `.+?` }, {SPACE: `\\s+`}, `▾`, { STYLE: REG_STYLE_STR }, { COMMENT: `[^\\n]*` }, `[\\r\\n]`, { CONTENT_INDENT: `\\x20*` }, `↧`, { CONTENT: `[^↥]+` }, `↥`] }
-    ])
-    const REG_DETAIL = new RegExp(REG_DETAIL_STR.value)
-    // const REG_DETAIL = /(?<DETAIL_FORMAT>((?<DETAIL_INDENT>\x20*)(?<TITLE>.+)\s▾(?<STYLE>(\{[\w\s-;:'"#]+\})?)(?<COMMENT>\s*(.+)?)[\r\n](?<CONTENT_INDENT>\x20*)↧(?<CONTENT>[^↥]+)↥))/
-    let detailMatch
-    while ((detailMatch = REG_DETAIL.exec(block)) !== null) {
-        let { DETAIL_FORMAT, DETAIL_INDENT, TITLE, SPACE, STYLE, COMMENT, CONTENT_INDENT, CONTENT } = detailMatch.groups, descStyle = 'class="detail-desc"'
-        if (STYLE) descStyle += ` style="${STYLE.replace('{', '').replace('}', '')}"`
-        block = block.replace(DETAIL_FORMAT, `<div class="fold-detail sty${SPACE.length}">${DETAIL_INDENT}<span ${descStyle}>${TITLE}</span><span class="comment">${COMMENT}</span><div class="detail-content">${CONTENT_INDENT}<span>${CONTENT}</span></div></div>`)
-    }
-
-    /**
-     * Tree
-     * ------------------
-     * 第一层  注释说明
-     *     第二层  注释说明
-     *     第二层  注释说明
-     *         第三层  注释说明 
-     *             第四层  注释说明
-     *         第三层  注释说明
-     *     第二层  注释说明
-     *         第三层  注释说明
-     * 第一层  注释说明
-     * ------------------
-     * 更多选项：ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ
-     * 事件处理：
-     */
-    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓔ([^Ⓔ]+)Ⓔ)/.exec(block) !== null) {
-    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
-    //     let boxClassName = CLOSE ? `tree level5 close` : `tree level5`,
-    //         arr = TITLE.split(' | '),
-    //         titHtml = `<span class="title">${arr[0]}</span>`,
-    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
-    //         content = RegExp.$6
-    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
-    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
-    // }
-    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓓ([^Ⓓ]+)Ⓓ)/.exec(block) !== null) {
-    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
-    //     let boxClassName = CLOSE ? `tree level4 close` : `tree level4`,
-    //         arr = TITLE.split(' | '),
-    //         titHtml = `<span class="title">${arr[0]}</span>`,
-    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
-    //         content = RegExp.$6
-    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
-    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
-    // }
-    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓒ([^Ⓒ]+)Ⓒ)/.exec(block) !== null) {
-    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
-    //     let boxClassName = CLOSE ? `tree level3 close` : `tree level3`,
-    //         arr = TITLE.split(' | '),
-    //         titHtml = `<span class="title">${arr[0]}</span>`,
-    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
-    //         content = RegExp.$6
-    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
-    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
-    // }
-    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓑ([^Ⓑ]+)Ⓑ)/.exec(block) !== null) {
-    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
-    //     let boxClassName = CLOSE ? `tree level2 close` : `tree level2`,
-    //         arr = TITLE.split(' | '),
-    //         titHtml = `<span class="title">${arr[0]}</span>`,
-    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
-    //         content = RegExp.$6
-    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
-    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
-    // }
-    // while (/((\x20*)(.+)[\n\r]{1,2}(\x20*)(\|?)Ⓐ([^Ⓐ]+)Ⓐ)/.exec(block) !== null) {
-    //     const ALL = RegExp.$1, INDENT_TIT = RegExp.$2, TITLE = RegExp.$3, INDENT_CONTENT = RegExp.$4, CLOSE = RegExp.$5
-    //     let boxClassName = CLOSE ? `tree level1 close` : `tree level1`,
-    //         arr = TITLE.split(' | '),
-    //         titHtml = `<span class="title">${arr[0]}</span>`,
-    //         commentHtml = arr.length > 1 ? `<span class="comment">${arr[1]}</span>` : '',
-    //         content = RegExp.$6
-    //     while (/(\x20\|\x20(.+))/.exec(content) !== null) { content = content.replace(RegExp.$1, `<span class="comment">${RegExp.$2}</span>`) }
-    //     block = block.replace(ALL, `<div class="${boxClassName}">${INDENT_TIT}${titHtml}${commentHtml}<div class="tree-content">${INDENT_CONTENT}${content}</div></div>`)
-    // }
-
+    block = detail(block)
     // Tree结构解析
     block = parseTree(block)
 
@@ -363,7 +252,7 @@ function parseCustomBlock(block, path) {
             })
             content = content.replace($ALL, `<span class="${className}"${styleStr}><div class="list-wrapper">${html}</div></span>`)
         }
-        
+
         block = block.replace(e, `<div class="form-elements">${content}</div>`)
     })
 
@@ -373,7 +262,7 @@ function parseCustomBlock(block, path) {
      *     API{color:26f}  https://api.com:4432  https://api.com:4432
      * ▦
      */
-     while (/(▦([^▦]+)▦)/.exec(block) !== null) {
+    while (/(▦([^▦]+)▦)/.exec(block) !== null) {
         const $FORMAT = RegExp.$1, $CONTENT = RegExp.$2
         let tableHtml = ''
         const lines = $CONTENT.split(/\x20*[\r\n]+\x20*/)
@@ -481,10 +370,10 @@ function parseCustomBlock(block, path) {
      */
     let matchFeild
     while ((matchFeild = /(?<ALL>\x20*◢(?<OBJ>\[[^\]]+\])\x20*[\r\n]+(?<CONTENT>[\s\S]+?)◣)/.exec(block)) !== null) {
-        let {ALL, OBJ, CONTENT} = matchFeild.groups
+        let { ALL, OBJ, CONTENT } = matchFeild.groups
         let arr = JSON.parse(OBJ) || []
         let inputHtml = ``
-        arr.forEach(({key, label, value, color}) => {
+        arr.forEach(({ key, label, value, color }) => {
             const reg = new RegExp(`▹${key}◃`, 'g')
             const valHtml = color ? `<span style="font-weight:bold; color:${color}" class="observe_${key}">${value}</span>` : `<span class="observe_${key}">${value}</span>`
             CONTENT = CONTENT.replace(reg, valHtml)
@@ -495,26 +384,13 @@ function parseCustomBlock(block, path) {
 
     block = block.replace('===+', '\n<pre class="code-block">').replace('===-', '</pre>')
 
-    blockCount++
-    const CUSTOM_BLOCK_NAME = 'CUSTOM_BLOCK_' + blockCount + 'A'
-    TAG_MAP_BLOCK[CUSTOM_BLOCK_NAME] = block
-
-    return CUSTOM_BLOCK_NAME
+    return block
 }
 
-module.exports = {
-    start(code, path) {
-        const matchCustomBlock = code.match(/===\+[\s\S]+?===\-/g) || []
-        matchCustomBlock.forEach((block) => {
-            code = code.replace(block, parseCustomBlock(block, path))
-        })
-        return code
-    },
-    end(code) {
-        for (let key in TAG_MAP_BLOCK) {
-            code = code.replace(key, TAG_MAP_BLOCK[key])
-        }
-        //Search.save()
-        return code
-    }
+module.exports = function (code, path) {
+    const matchCustomBlock = code.match(/===\+[\s\S]+?===\-/g) || []
+    matchCustomBlock.forEach((block) => {
+        code = code.replace(block, parseCustomBlock(block, path))
+    })
+    return code
 }
