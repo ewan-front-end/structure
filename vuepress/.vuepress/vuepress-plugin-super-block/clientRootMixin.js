@@ -17,11 +17,38 @@ export default {
                 el.innerHTML = el.innerHTML.replace(/\{TEMPLATE\{/g, '{{').replace(/\}TEMPLATE\}/g, '}}')
             }
         })
+        
         const $details = document.querySelectorAll('.detail-desc')
         $details.forEach(dom => {
             dom.addEventListener('click', e => {
                 let tar = e.currentTarget.parentNode
                 tar.className = tar.className === 'fold-detail' ? 'fold-detail active' : 'fold-detail'
+            })
+        })
+
+        const $tree_switch = document.querySelectorAll('.tree .switch')
+        $tree_switch.forEach(dom => {
+            dom.addEventListener('click', e => {
+                let tar = e.target
+                let tarClass = tar.className
+                let id = tar.getAttribute('data-target')
+                let box = document.querySelector('#' + id)
+                tar.className = tarClass.includes('active') ? tarClass.replace(/\s?active/, '') : tarClass + ' active'
+                box.className = box.className === 'tree-children-container' ? 'tree-children-container active' : 'tree-children-container'
+            })
+        })
+
+        const setChildreVal = (c, v) => {
+            c.forEach(e => {
+                e.innerText = v
+            })
+        }
+        document.querySelectorAll('input.observe').forEach(input => {
+            const key = input.getAttribute('data-key')
+            const children = document.querySelectorAll('.observe_' + key)
+            input.addEventListener('change', e => {
+                const val = e.target.value
+                setChildreVal(children, val)
             })
         })
     },
