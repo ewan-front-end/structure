@@ -14,6 +14,6 @@ module.exports = (path, node) => {
     }
     content = `---\nsidebar: false\n---\n\n<div class="root-children brick-wall">\n\n${childStr}\n</div>\n\n## 文档地图\n` + content
     writeFile(path + '.md', content, e => {
-        console.log(chalk.gray('创建 docs/' + e.split('/docs/')[1]))
+        console.log(chalk.gray('创建 docs/' + e.split(/[\\/]docs[\\/]/)[1]))
     })
 }

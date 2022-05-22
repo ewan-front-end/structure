@@ -58,6 +58,6 @@ ${contentHeader}
 <div class="static-content">
 \n${staticContent}
 </div>`, e => {
-    console.log(chalk.gray('创建 docs/' + e.split('/docs/')[1]))
+    console.log(chalk.gray('创建 docs/' + e.split(/[\\/]docs[\\/]/)[1]))
 })
 }

@@ -262,36 +262,26 @@ function parseCustomBlock(block, path) {
      *     API{color:26f}  https://api.com:4432  https://api.com:4432
      * ▦
      */
-    while (/(▦([^▦]+)▦)/.exec(block) !== null) {
+    const REG_STYLE = /\{([\w\s-;:'"#]+)\}/
+     while (/(▦([^▦]+)▦)/.exec(block) !== null) {
         const $FORMAT = RegExp.$1, $CONTENT = RegExp.$2
-        let tableHtml = ''
         const lines = $CONTENT.split(/\x20*[\r\n]+\x20*/)
-        const header = lines.splice(0, 1)[0].split(/\s{2,}/)
-        const colArr = [], colsNum = header.length
-        header.forEach(tit => {
-            let hasStyle = tit.match(/\{([\w\s-;:'"#]+)\}/), styleStr = ''
-            if (hasStyle) {
-                styleStr = ` style="${hasStyle[1]}"`
-                tit = tit.replace(/\{([\w\s-;:'"#]+)\}/, '')
-            }
-            colArr.push(`<strong>${tit}</strong>`)
-        })
+        let table = '', tr = ``
         lines.forEach(line => {
-            const valArr = line.split(/\s{2,}/)
-            for (let i = 0; i < colsNum; i++) {
-                let val = valArr[i] || '', hasStyle = val.match(/\{([\w\s-;:'"#]+)\}/), styleStr = ''
+            let cols = line.split(/\s{2,}/), td = ``
+            cols.forEach(val => {
+                let matchStyle = val.match(REG_STYLE), style = ''
                 if (val.match(/^-+$/m)) val = '&nbsp;'
-                if (hasStyle) {
-                    styleStr = ` style="${hasStyle[1]}"`
-                    val = val.replace(/\{([\w\s-;:'"#]+)\}/, '')
+                if (matchStyle) {
+                    style = ` style="${matchStyle[1]}"`
+                    val = val.replace(REG_STYLE, '')
                 }
-                colArr[i] += `<i${styleStr}>${val}</i>`
-            }
+                td += `<td${style}>${val}</td>`
+            })
+            tr += `<tr>${td}</tr>`
         })
-        colArr.forEach(col => {
-            tableHtml += `<span class="col">${col}</span>`
-        })
-        block = block.replace($FORMAT, `<span class="table">${tableHtml}</span>`)
+        table += `<table class="table">${tr}</table>`
+        block = block.replace($FORMAT, table)
     }
 
     // 行样式[{color:#f00}(bd)]
