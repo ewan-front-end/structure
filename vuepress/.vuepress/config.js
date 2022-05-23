@@ -1,4 +1,4 @@
-const { STATIC_NAV } = require('../.config.js')
+const { LAYOUT_NAV } = require('../.data/index.js')
 
 module.exports = {
     "title": "标题文本",
@@ -6,7 +6,7 @@ module.exports = {
     "themeConfig": {
         "port": "9000",
         "logo": "/logo.png",
-        "nav": STATIC_NAV,
+        "nav": LAYOUT_NAV,
         "sidebarDepth": 2,
         "sidebar": "auto"
     },

@@ -1,12 +1,17 @@
-let PATH_DATA = {}, RES_DATA = {}, DATA = require('./data')
+let PATH_DATA = {}, 
+    RES_DATA = {}, 
+    LAYOUT_NAV = [],
+    DATA = require('./data')
 
 function handleChildren(node) {
-    if (node.children) {
+    let {children, src, appendToNav, title, path} = node
+    if (children) {
         node.path += '/'
-        for (key in node.children) { handleData(key, node.children[key], node) }
+        for (key in children) { handleData(key, children[key], node) }
     }
-    if (node.src) RES_DATA[node.src] = node
-    PATH_DATA[node.path] = node
+    if (src) RES_DATA[src] = node
+    if (appendToNav) LAYOUT_NAV.push({text: title, link: path})
+    PATH_DATA[path] = node
 }
 function handleData(key, node, parent) {
     Object.assign(node, { parent, key, title: node.title || node.linkName || key, linkName: node.linkName || node.title || key, path: parent ? parent.path + key : '' })
@@ -71,6 +76,7 @@ function compare(callback) {
 module.exports = {
     DATA,
     PATH_DATA,
+    LAYOUT_NAV,
     queryByPath: path => {
         if (PATH_DATA[path]) return PATH_DATA[path]
         console.error(`路径为"${path}"的数据不存在！`)
