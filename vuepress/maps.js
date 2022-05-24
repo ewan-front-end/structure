@@ -27,6 +27,7 @@ const UNDEPLOY = [
 
 module.exports = {
     FIRST_DEPLOY,
+    UNDEPLOY,
     ASSETS,
     DATA,
     THEME
