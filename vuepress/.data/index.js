@@ -10,7 +10,7 @@ function handleChildren(node) {
         for (key in children) { handleData(key, children[key], node) }
     }
     if (src) RES_DATA[src] = node
-    if (appendToNav) LAYOUT_NAV.push({text: title, link: path})
+    if (appendToNav) LAYOUT_NAV.push({text: title, link: path.match(/\/$/m) ? path + 'README' : path})
     PATH_DATA[path] = node
 }
 function handleData(key, node, parent) {
