@@ -17,6 +17,13 @@ const FIRST_DEPLOY = [
     ['.structure/vuepress/guidance.js       ', '.deploy/guidance.js         ', '更新引导'],
     ['.structure/vuepress/update.js         ', '.deploy/update.js           ', '更新:数据体系/默认主题/静态资源']
 ]
+const UNDEPLOY = [
+    '.config.js',
+    ['.data/data.js', 'md'], // 排除删除
+    '.vuepress',
+    '.deploy/guidance.js',
+    '.deploy/update.js'
+]
 
 module.exports = {
     FIRST_DEPLOY,
