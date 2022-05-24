@@ -19,7 +19,7 @@ const FIRST_DEPLOY = [
 ]
 const UNDEPLOY = [
     '.config.js',
-    ['.data/data.js', 'md'], // 排除删除
+    {dir: '.data', exclude: ['data.js', 'md']}, // 排除删除
     '.vuepress',
     '.deploy/guidance.js',
     '.deploy/update.js'
