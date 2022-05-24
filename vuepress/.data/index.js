@@ -5,13 +5,11 @@ let PATH_DATA = {},
 
 function handleChildren(node) {
     let {children, src, appendToNav, title, path} = node
-    if (children) {
-        node.path += '/'
-        for (key in children) { handleData(key, children[key], node) }
-    }
+    if (children) node.path += '/'
+    if (children) for (key in children) { handleData(key, children[key], node) }
     if (src) RES_DATA[src] = node
     if (appendToNav) LAYOUT_NAV.push({text: title, link: path.match(/\/$/m) ? path + 'README' : path})
-    PATH_DATA[path] = node
+    PATH_DATA[node.path] = node
 }
 function handleData(key, node, parent) {
     Object.assign(node, { parent, key, title: node.title || node.linkName || key, linkName: node.linkName || node.title || key, path: parent ? parent.path + key : '' })
