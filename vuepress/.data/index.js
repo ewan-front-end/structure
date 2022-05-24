@@ -4,11 +4,11 @@ let PATH_DATA = {},
     DATA = require('./data')
 
 function handleChildren(node) {
-    let {children, src, appendToNav, title, path} = node
+    let {children, src, appendToNav, title} = node
     if (children) node.path += '/'
     if (children) for (key in children) { handleData(key, children[key], node) }
     if (src) RES_DATA[src] = node
-    if (appendToNav) LAYOUT_NAV.push({text: title, link: path.match(/\/$/m) ? path + 'README' : path})
+    if (appendToNav) LAYOUT_NAV.push({text: title, link: node.path.match(/\/$/m) ? node.path + 'index' : node.path})
     PATH_DATA[node.path] = node
 }
 function handleData(key, node, parent) {
