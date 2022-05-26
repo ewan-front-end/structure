@@ -31,9 +31,7 @@ module.exports = (code, path) => {
      * 格式：[LINK ID:NEW_TITLE]
      * 例子：[LINK MySQL_install] 或 [LINK MySQL_install:重命名]
      */
-    while (/(\[LINK\s([^#:\n\r]+?):?([^#:\n\r]*?)\])/.exec(code) !== null) {
-        const ALL = RegExp.$1, KEY = RegExp.$2, TIT = RegExp.$3
-        const anchor = LINKS[KEY]
+    function createAnchor(ALL, KEY, anchor, TIT) {
         if (anchor) {
             const pathname = /\/$/m.test(anchor.path) ? anchor.path : anchor.path + '.html'
             const href = anchor.path === path ? `#${KEY}` : `${pathname}#${KEY}`
@@ -43,6 +41,8 @@ module.exports = (code, path) => {
             code = code.replace(ALL, `锚点[${KEY}]不存在`)
         }
     }
+    while (/(\[LINK\s([^#:\n\r]+)\])/.exec(code) !== null) { createAnchor(RegExp.$1, RegExp.$2, LINKS[RegExp.$2], null) }
+    while (/(\[LINK\s([^#:\n\r]+):([^#:\n\r]+)\])/.exec(code) !== null) { createAnchor(RegExp.$1, RegExp.$2, LINKS[RegExp.$2], RegExp.$3) }
 
     return code
 }
