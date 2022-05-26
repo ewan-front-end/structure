@@ -33,10 +33,12 @@ module.exports = (code, path) => {
      */
     function createAnchor(ALL, KEY, anchor, TIT) {
         if (anchor) {
+            const isSelf = anchor.path === path
             const pathname = /\/$/m.test(anchor.path) ? anchor.path : anchor.path + '.html'
-            const href = anchor.path === path ? `#${KEY}` : `${pathname}#${KEY}`
+            const href = isSelf ? `#${KEY}` : `${pathname}#${KEY}`
             const title = TIT || anchor.title
-            code = code.replace(ALL, `<a href="${href}" target="_blank">${title}</a>`)
+            const content = isSelf ? `<a href="${href}">${title}</a>` : `<a href="${href}" target="_blank">${title}</a>`
+            code = code.replace(ALL, content)
         } else {
             code = code.replace(ALL, `锚点[${KEY}]不存在`)
         }
