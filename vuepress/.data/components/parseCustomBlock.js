@@ -57,7 +57,7 @@ function parseCustomBlock(block, path) {
      * 运行命令
      * hello> npm run dev
      */
-    while (/^\x20*(([\w-\/\\:\.▹◃~#]+)\&gt;)\s[^\r\n]+/m.exec(block) !== null) {
+    while (/^\x20*((.+[^\s])\&gt;)\s[^\r\n]+/m.exec(block) !== null) {
         block = block.replace(RegExp.$1, `<span class="run-command">${RegExp.$2}</span>`)
     }
 
