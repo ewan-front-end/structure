@@ -1,11 +1,14 @@
 const parseTree = require('./parseTree.js')
-const { regexpPresetParse, PRESET_CSS } = require('./regexp-preset')
 const aggregate = require('./aggregate.js')
+const { regexpPresetParse, PRESET_CSS } = require('./regexp-preset')
 const detail = require('./widgets/detail.js')
 const REG_STYLE_STR = `(\\{[\\w\\s-;:'"#]+\\})?` // color: #f00; font-size: 14px
 const REG_CLASS_STR = `(\\([\\w\\s-]+\\))?`      // bd sz-16 c-0
+const { CUSTOM_BLOCK_CUSTOM_CHAR } = require('../../.config.js')
 
-function parseCustomBlock(block, path) {
+module.exports = (block, path) => {
+    block = block.replace(/\{\{/g, `{TEMPLATE{`)
+    block = block.replace(/\}\}/g, `}TEMPLATE}`)
     block = block.replace(/\</g, "&lt;").replace(/\>/g, "&gt;")
     block = aggregate(block, path)
 
@@ -263,7 +266,7 @@ function parseCustomBlock(block, path) {
      * ▦
      */
     const REG_STYLE = /\{([\w\s-;:'"#]+)\}/
-     while (/(▦([^▦]+)▦)/.exec(block) !== null) {
+    while (/(▦([^▦]+)▦)/.exec(block) !== null) {
         const $FORMAT = RegExp.$1, $CONTENT = RegExp.$2
         const lines = $CONTENT.split(/\x20*[\r\n]+\x20*/)
         let table = '', tr = ``
@@ -374,13 +377,11 @@ function parseCustomBlock(block, path) {
 
     block = block.replace('===+', '\n<pre class="code-block">').replace('===-', '</pre>')
 
-    return block
-}
-
-module.exports = function (code, path) {
-    const matchCustomBlock = code.match(/===\+[\s\S]+?===\-/g) || []
-    matchCustomBlock.forEach((block) => {
-        code = code.replace(block, parseCustomBlock(block, path))
+    // todo:更精确在CUSTOM_BLOCK中替换
+    CUSTOM_BLOCK_CUSTOM_CHAR.forEach(e => {
+        const key = Object.keys(e)[0], val = Object.values(e)[0], reg = new RegExp(key, 'g')
+        block = block.replace(reg, val)
     })
-    return code
+
+    return block
 }

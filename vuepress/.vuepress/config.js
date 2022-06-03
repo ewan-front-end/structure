@@ -1,4 +1,8 @@
+const fs = require('fs')
+const Path = require('path')
 const { LAYOUT_NAV } = require('../.data/index.js')
+const projectsDir = Path.resolve(__dirname, '../.data/projects')
+if (fs.existsSync(projectsDir)) LAYOUT_NAV.push({"text": "项目", "link": "/doc-projects"})
 
 module.exports = {
     "title": "标题文本",
