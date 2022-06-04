@@ -12,6 +12,11 @@ module.exports = (block, path) => {
     block = block.replace(/\</g, "&lt;").replace(/\>/g, "&gt;")
     block = aggregate(block, path)
 
+    // 注：xxxx
+    while (/(注[：:](.+))/.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="note">${RegExp.$2}</span>\n`)
+    }
+
     /**
      * 行注释
      * 多匹配一个前置空格 替换时空格移到标签 防止被全等注释二次替换
