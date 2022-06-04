@@ -1,15 +1,15 @@
-let PATH_DATA = {}, 
-    RES_DATA = {}, 
+let PATH_DATA = {},
+    RES_DATA = {},
     LAYOUT_NAV = [],
     DATA = require('./data')
 
 function handleChildren(node) {
-    let {children, src, appendToNav, title} = node
+    let { children, src, appendToNav, title } = node
     if (children) node.path += '/'
-    if (children) for (key in children) { handleData(key, children[key], node) }
+    if (appendToNav) LAYOUT_NAV.push({ text: title, link: node.path.match(/\/$/m) ? node.path + 'index' : node.path })
     if (src) RES_DATA[src] = node
-    if (appendToNav) LAYOUT_NAV.push({text: title, link: node.path.match(/\/$/m) ? node.path + 'index' : node.path})
     PATH_DATA[node.path] = node
+    if (children) for (key in children) { handleData(key, children[key], node) }
 }
 function handleData(key, node, parent) {
     Object.assign(node, { parent, key, title: node.title || node.linkName || key, linkName: node.linkName || node.title || key, path: parent ? parent.path + key : '' })
@@ -29,11 +29,11 @@ const addChild = (node, path) => {
     }
 }
 const addChildren = (children, parentPath) => {
-    for (var key in children) {addChild(children[key], parentPath + key)}
+    for (var key in children) { addChild(children[key], parentPath + key) }
 }
 function handleDataChildren(oChildren, nChildren, parentPath) {
-    for (key in nChildren) { 
-        compareDiff(oChildren[key], nChildren[key], key, parentPath) 
+    for (key in nChildren) {
+        compareDiff(oChildren[key], nChildren[key], key, parentPath)
     }
 }
 function compareDiff(oNode, nNode, key, parentPath) {

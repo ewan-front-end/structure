@@ -111,13 +111,13 @@ module.exports = (block, path) => {
         }
         block = block.replace(RegExp.$1, `<span class="${classStr}" style="${styleStr}"><i></i>${RegExp.$6}</span>`)
     }
+    
     /**
      * 标题表示二
      * ## TITLE H2 14
      * ### TITLE H3 16
      * #### TITLE H4 18
-     * ##### TITLE H5 20
-     * ###### TITLE H6 22
+     * ...
      * [####]{color:#fff}(bd) TITLE INVERT
      * 应用环境：独占一行
      */
@@ -126,7 +126,7 @@ module.exports = (block, path) => {
         {
             FORMAT: [
                 { INVERT: `\\[?` },       // 反相开始 [
-                { LEVEL: `#{2,6}` },      // 标题字号 #-######
+                { LEVEL: `#{2,15}` },      // 标题字号 #-######
                 `\\]?`,                 // 反相结束 ]
                 { STYLE: REG_STYLE_STR }, // 区配样式 {color: #fff}
                 { CLASS: REG_CLASS_STR }, // 匹配类名 (bd)
@@ -374,8 +374,6 @@ module.exports = (block, path) => {
         })
         block = block.replace(ALL, `<div class="observe-feilds"><div class="feilds-container">${inputHtml}</div></div>${CONTENT}`)
     }
-
-    block = block.replace('===+', '\n<pre class="code-block">').replace('===-', '</pre>')
 
     // todo:更精确在CUSTOM_BLOCK中替换
     CUSTOM_BLOCK_CUSTOM_CHAR.forEach(e => {
