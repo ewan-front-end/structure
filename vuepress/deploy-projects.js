@@ -8,7 +8,7 @@ const ARG_ARR = process.argv.slice(2)  // 命令参数
 const createDocs = () => {
     const from = Path.resolve(__dirname, '../.data/projects')
     const files = fs.readdirSync(from)
-    const docsDir = Path.resolve(__dirname, '../doc-projects')
+    const docsDir = Path.resolve(__dirname, '../projects')
     const indexPath = Path.resolve(docsDir, 'README.md')
     let fileLinkStr = ''
     files.forEach((file, index) => {

@@ -6,6 +6,7 @@ let PATH_DATA = {},
 function handleChildren(node) {
     let { children, src, appendToNav, title } = node
     if (children) node.path += '/'
+    if (node.parent && node.parent.path === '/' && node.key === 'projects') throw new Error("根类命名保留字：projects")
     if (appendToNav) LAYOUT_NAV.push({ text: title, link: node.path.match(/\/$/m) ? node.path + 'index' : node.path })
     if (src) RES_DATA[src] = node
     PATH_DATA[node.path] = node

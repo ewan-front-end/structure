@@ -59,8 +59,9 @@ module.exports = (block, path) => {
     /**
      * 运行命令
      * hello> npm run dev
+     * 当 ►> ESLint + Standard config◄ 时 非命令
      */
-    while (/^\x20*((.+[^\s])\&gt;)\s[^\r\n]+/m.exec(block) !== null) {
+    while (/^\x20*(([\w-\/\\:\.▹◃]+[^\s])\&gt;)\s[^\r\n]+/m.exec(block) !== null) {
         block = block.replace(RegExp.$1, `<span class="run-command">${RegExp.$2}</span>`)
     }
 
@@ -111,7 +112,6 @@ module.exports = (block, path) => {
         }
         block = block.replace(RegExp.$1, `<span class="${classStr}" style="${styleStr}"><i></i>${RegExp.$6}</span>`)
     }
-    
     /**
      * 标题表示二
      * ## TITLE H2 14
