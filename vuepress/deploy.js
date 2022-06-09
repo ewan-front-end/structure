@@ -5,13 +5,13 @@ const { confirm } = require('../../.utils/src/node/inquirer-prompt')
 const { copySync, editJson } = require('../../.utils/src/fs.js')
 const ROOT_DOCS = path.resolve(__dirname, '../../..')
 const ROOT_ABST = path.resolve(__dirname, '../..')
+const fillStr = (str, len) => `${str}                                        `.substr(0, len);
 
 printDeployList(DEPLOY_INIT)
 confirm('是否继续？', false).then(bl => {
     bl && deploy()
 })
 
-const fillStr = (str, len) => `${str}                                        `.substr(0, len)
 function deploy() {
     const COPYS = [], SCRIPTS = []
 
