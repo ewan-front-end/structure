@@ -7,6 +7,11 @@ const ROOT_DOCS = path.resolve(__dirname, '../../..')
 const ROOT_ABST = path.resolve(__dirname, '../..')
 const fillStr = (str, len) => `${str}                                        `.substr(0, len);
 
+const W_TYPE = 10, W_FROM = 40, W_TO = 30
+
+console.log('部署动作有如下操作:')
+console.log(chalk.gray(fillStr('DOWNLOAD', W_TYPE) + 'ewan-front-end/structure'))
+console.log(chalk.gray(fillStr('DOWNLOAD', W_TYPE) + 'ewan-front-end/utils'))
 printDeployList(DEPLOY_INIT)
 confirm('是否继续？', false).then(bl => {
     bl && deploy()
@@ -44,14 +49,14 @@ function deploy() {
 function printDeployList(arr) {
     arr.forEach(item => {
         const {type, from, to, key, value, file, dir, exclude, desc} = item
-        let str = chalk.gray(fillStr(type, 10))
+        let str = fillStr(type, W_TYPE)
         if (type === 'COPY' && from && to) {
-            str += chalk.gray(fillStr(from, 40))
-            str += chalk.gray(fillStr(to, 30))
-            str += chalk.gray(desc)
+            str += fillStr(from, W_FROM)
+            str += fillStr(to, W_TO)
+            str += desc
         }
         if (type === 'SCRIPT') {}
-        console.log(str);
+        console.log(chalk.gray(str));
     })
 }
 
