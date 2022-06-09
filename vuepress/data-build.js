@@ -1,7 +1,7 @@
 const Path = require('path'), ARG_ARR = process.argv.slice(2)  // 命令参数
 const createFile = require('./components/createFile')
 const createHome = require('./components/createHome')
-const { PATH_DATA, queryByPath } = require('./index.js')
+const { PATH_DATA, queryByPath } = require('./data-module.js')
 
 // 生成文件与结构
 const createItem = node => {

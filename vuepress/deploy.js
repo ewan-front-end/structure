@@ -1,6 +1,6 @@
 const chalk = require('chalk')
 const path = require("path")
-const { DEPLOY_INIT } = require('./maps.js')
+const { DEPLOY_INIT } = require('./deploy-maps.js')
 const { confirm } = require('../../.utils/src/node/inquirer-prompt')
 const { copySync, editJson } = require('../../.utils/src/fs.js')
 const fillStr = (str, len) => `${str}                                                  `.substr(0, len);
@@ -48,11 +48,7 @@ function printDeployList(arr) {
     arr.forEach(item => {
         const {type, from, to, key, value, file, dir, exclude, desc} = item
         let str = fillStr(type, W_TYPE)
-        if (type === 'COPY' && from && to) {
-            str += fillStr(from, W_FROM)
-            str += fillStr(to, W_TO)
-            str += desc
-        }
+        if (from && to) str += (fillStr(from, W_FROM) + fillStr(to, W_TO) + desc)
         if (type === 'SCRIPT') {}
         console.log(chalk.gray(str));
     })

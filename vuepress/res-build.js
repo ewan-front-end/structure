@@ -1,7 +1,7 @@
 const Path = require('path'), ARG_ARR = process.argv.slice(2)  // 命令参数
 const createFile = require('./components/createFile')
 const createHome = require('./components/createHome')
-const {queryByResName} = require('./index')
+const {queryByResName} = require('./data-module')
 
 if (ARG_ARR.length > 0) {
     const name = ARG_ARR[0]
