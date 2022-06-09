@@ -9,30 +9,35 @@ const THEME = [
 
 ]
 const DEPLOY_INIT = [
-    {type: 'COPY', from: '.structure/vuepress/config.js', to: '.config.js', desc: '全局配置'},
-    {type: 'COPY', from: '.structure/vuepress/.data', to: '.data', desc: '数据体系'},
+    {type: 'COPY', from: '.structure/vuepress/data', to: '.abstract/data', desc: '数据体系'},
     {type: 'COPY', from: '.structure/vuepress/.vuepress', to: '.vuepress', desc: '默认主题改造'},
-    {type: 'COPY', from: '.structure/vuepress/assets/favicon.ico', to: '.vuepress/public/favicon.ico', desc: '资源:网页标签图标'},
-    {type: 'COPY', from: '.structure/vuepress/assets/logo.png', to: '.vuepress/public/logo.png', desc: '资源:站点标识'},
-    {type: 'COPY', from: '.structure/vuepress/guidance.js', to: '.deploy/guidance.js', desc: '更新引导'},
-    {type: 'COPY', from: '.structure/vuepress/update.js', to: '.deploy/update.js', desc: '更新:数据体系/默认主题/静态资源'},
-    {type: 'COPY', from: '.structure/vuepress/deploy-projects.js', to: '.deploy/deploy-projects.js', desc: '特种文档：项目描述体系部署'},
+    {type: 'COPY', from: '.structure/vuepress/config.js', to: '.abstract/config.js', desc: '全局配置'},
+    {type: 'COPY', from: '.structure/vuepress/deploy-projects.js', to: '.abstract/deploy-projects.js', desc: '特种文档：项目描述体系部署'},
+    {type: 'COPY', from: '.structure/vuepress/guidance.js', to: '.abstract/guidance.js', desc: '更新引导'},
+    {type: 'COPY', from: '.structure/vuepress/update.js', to: '.abstract/update.js', desc: '更新:数据体系/默认主题/静态资源'},
 
-    {type: 'SCRIPT', key: 'docs:dev', value: 'concurrently \"npm run data:watch\" \"npm run res:watch\" \"vuepress dev docs\"', desc: ''},
+    {type: 'SCRIPT', key: 'docs:dev', value: 'concurrently \"npm run data:watch\" \"npm run res:watch\" \"vuepress dev docs\"', desc: '开发服务增加热更新'},
     {type: 'SCRIPT', key: 'update:data', value: 'node docs/.deploy/update.js DATA', desc: '部署数据体系'},
-    {type: 'SCRIPT', key: 'update:theme', value: 'node docs/.deploy/update.js THEME', desc: '默认主题改造'},
-    {type: 'SCRIPT', key: 'update:assets', value: 'node docs/.deploy/update.js ASSETS', desc: '更新资源'},
-    {type: 'SCRIPT', key: 'data:create', value: 'node docs/.data/data-create.js', desc: '创建DATA到MD'},
-    {type: 'SCRIPT', key: 'data:watch', value: 'node docs/.data/data-watch.js', desc: '监听数据变化创建DATA到MD'},
-    {type: 'SCRIPT', key: 'res:create', value: 'node docs/.data/res-create.js', desc: '创建MD到DOC'},
-    {type: 'SCRIPT', key: 'res:watch', value: 'node docs/.data/res-watch.js', desc: '监听MD变化创建MD到DOC'}
+    {type: 'SCRIPT', key: 'update:theme', value: 'node docs/.abstract/update.js THEME', desc: '默认主题改造'},
+    {type: 'SCRIPT', key: 'update:assets', value: 'node docs/.abstract/update.js ASSETS', desc: '更新资源'},
+    {type: 'SCRIPT', key: 'data:create', value: 'node docs/.abstract/data-create.js', desc: '创建DATA到MD'},
+    {type: 'SCRIPT', key: 'data:watch', value: 'node docs/.abstract/data-watch.js', desc: '监听数据变化创建DATA到MD'},
+    {type: 'SCRIPT', key: 'res:create', value: 'node docs/.abstract/res-create.js', desc: '创建MD到DOC'},
+    {type: 'SCRIPT', key: 'res:watch', value: 'node docs/.abstract/res-watch.js', desc: '监听MD变化创建MD到DOC'},
+    {type: 'SCRIPT', key: 'projects:deploy', value: 'node docs/.abstract/projects-deploy.js', desc: '监听MD变化创建MD到DOC'},
+    {type: 'SCRIPT', key: 'projects:create', value: 'node docs/.abstract/projects-create.js ', desc: '监听MD变化创建MD到DOC'}
 ]
 const UNDEPLOY = [
-    {type: 'DEL', file: '.config.js'},
-    {type: 'DEL', dir: '.data', exclude: ['data.js', 'md']},
-    {type: 'DEL', dir: '.vuepress'},
-    {type: 'DEL', file: '.deploy/guidance.js'},
-    {type: 'DEL', file: '.deploy/update.js'}
+    {type: 'BACKUPS', from: '.abstract/config.js', to: '.backups/config.js', desc: '备份全局配置'},
+    {type: 'BACKUPS', from: '.abstract/data/md', to: '.backups/md', desc: '备份RES'},
+    {type: 'BACKUPS', from: '.abstract/data/data.js', to: '.backups/data.js', desc: '备份DATA'},
+    {type: 'BACKUPS', from: '.vuepress/public', to: '.backups/public', desc: '备份静态资源'},
+    {type: 'DEL', file: '.abstract/config.js'},
+    {type: 'DEL', file: '.abstract/deploy-projects.js'},
+    {type: 'DEL', file: '.abstract/guidance.js'},
+    {type: 'DEL', file: '.abstract/update.js'},
+    {type: 'DEL', dir: '.abstract/data'},
+    {type: 'DEL', dir: '.vuepress'}
 ]
 
 module.exports = {

@@ -1,10 +1,10 @@
 const fs = require('fs')
 const Path = require('path')
 const chalk = require('chalk')
-const { readFile, writeFile } = require('../.utils/src/fs.js')
-const parseCustomBlock = require('../.data/components/parseCustomBlock')
+const { readFile, writeFile } = require('./utils/src/fs.js')
+const parseCustomBlock = require('./data/components/parseCustomBlock')
 const ARG_ARR = process.argv.slice(2)  // 命令参数
-const dirFrom = Path.resolve(__dirname, '../.data/projects')
+const dirFrom = Path.resolve(__dirname, 'data/projects')
 const dirTo = Path.resolve(__dirname, '../projects')
 
 const handleContent = (filename) => {
@@ -41,15 +41,4 @@ const createDocs = (dest) => {
     }
 }
 
-if (ARG_ARR.length > 0) {
-    const arg = ARG_ARR[0]
-    if (arg === 'DEPLOY') {
-        const content = `
-        demo
-        `
-        writeFile(Path.resolve(__dirname, '../.data/projects/demo.md'), content)
-    }
-    if (arg === 'DOCS') {
-        ARG_ARR.length > 1 ? createDocs(ARG_ARR[1]) : createDocs()
-    }
-}
+ARG_ARR.length > 0 ? createDocs(ARG_ARR[0]) : createDocs()
