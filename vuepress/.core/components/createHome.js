@@ -5,7 +5,7 @@ const parseCode = require('./parseCode')
 
 module.exports = (path, node) => {
     let {src, children} = node
-    let content = readFile(Path.resolve(__dirname, '../md/'+src+'.md'))
+    let content = readFile(Path.resolve(__dirname, '../../md/'+src+'.md'))
     if (content) content = parseCode(content, '/')
     let childStr = ''
     for (i in children) {

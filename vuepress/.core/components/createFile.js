@@ -31,7 +31,7 @@ module.exports = (fullPath, target) => {
     }
     // 资源静态内容
     if (target.src) {
-        let file = readFile(PATH.resolve(__dirname, '../md/'+target.src+'.md'))
+        let file = readFile(PATH.resolve(__dirname, '../../md/'+target.src+'.md'))
         if (file) {
             file = parseCode(file, target.path)
             staticContent += `${file}\n`

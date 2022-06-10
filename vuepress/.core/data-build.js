@@ -7,7 +7,7 @@ const { PATH_DATA, queryByPath } = require('./data-module.js')
 const createItem = node => {
     let path = node.path, abs
     if (path.match(/\/$/m)) path += 'README'
-    abs = Path.resolve(__dirname, '..' + path)
+    abs = Path.resolve(__dirname, '../..' + path)
     if (path === '/README') {
         createHome(abs, node)
     } else {

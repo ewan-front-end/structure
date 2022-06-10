@@ -1,11 +1,11 @@
 const fs = require('fs')
 const Path = require('path')
 const chalk = require('chalk')
-const { readFile, writeFile } = require('./utils/src/fs.js')
-const parseCustomBlock = require('./data/components/parseCustomBlock')
+const { readFile, writeFile } = require('../.utils/src/fs.js')
+const parseCustomBlock = require('./components/parseCustomBlock')
 const ARG_ARR = process.argv.slice(2)  // 命令参数
-const dirFrom = Path.resolve(__dirname, 'data/projects')
-const dirTo = Path.resolve(__dirname, '../projects')
+const dirFrom = Path.resolve(__dirname, '../projects')
+const dirTo = Path.resolve(__dirname, '../../projects')
 
 const handleContent = (filename) => {
     const pathTo = Path.resolve(dirTo, filename)

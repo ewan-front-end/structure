@@ -3,6 +3,6 @@ const { writeFile } = require('../.utils/src/fs.js')
 const content = `
 demo
 `
-writeFile(Path.resolve(__dirname, 'data/projects/demo.md'), content)
+writeFile(Path.resolve(__dirname, '../projects/demo.md'), content)
     
    

@@ -61,7 +61,7 @@ function compareDiff(oNode, nNode, key, parentPath) {
 }
 
 function compare(callback) {
-    delete require.cache[require.resolve('./data')]
+    delete require.cache[require.resolve('../data')]
     setTimeout(() => {
         let _DATA = require('../data')
         compareDiff(DATA, _DATA, '', '')
