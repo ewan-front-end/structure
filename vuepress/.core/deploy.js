@@ -12,8 +12,8 @@ const ROOT_ABS = path.resolve(__dirname, '../../..')
 function deploy() {
     const COPYS = [], SCRIPTS = []
 
-    DEPLOY_INIT.forEach(item => {
-        if (item.type === 'COPY') COPYS.push(item)
+    DEPLOY.forEach(item => {
+        if (item.from && item.to) COPYS.push(item)
         if (item.type === 'SCRIPT') SCRIPTS.push(item)
     })
 
