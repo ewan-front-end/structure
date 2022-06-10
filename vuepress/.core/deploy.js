@@ -1,19 +1,13 @@
 const chalk = require('chalk')
 const path = require("path")
-const { DEPLOY_INIT } = require('./deploy-maps.js')
-const { confirm } = require('../../.utils/src/node/inquirer-prompt')
-const { copySync, editJson } = require('../../.utils/src/fs.js')
+const { DEPLOY_INIT } = require('./maps.js')
+const { confirm } = require('../../../.utils/src/node/inquirer-prompt')
+const { copySync, editJson } = require('../../../.utils/src/fs.js')
 const fillStr = (str, len) => `${str}                                                  `.substr(0, len);
 
 const W_TYPE = 10, W_FROM = 40, W_TO = 30
-const ROOT = path.resolve(__dirname, '../../..')
-const ROOT_ABS = path.resolve(__dirname, '../..')
-
-console.log('部署动作有如下操作:')
-printDeployList(DEPLOY_INIT)
-confirm('是否继续？', false).then(bl => {
-    bl && deploy()
-})
+const ROOT = path.resolve(__dirname, '../../../..')
+const ROOT_ABS = path.resolve(__dirname, '../../..')
 
 function deploy() {
     const COPYS = [], SCRIPTS = []
@@ -28,7 +22,7 @@ function deploy() {
         copySync(path.resolve(ROOT_ABS, from), path.resolve(ROOT, to))
         console.log(chalk.gray('部署 ' + from + ' 到 docs/') + chalk.white(to) + chalk.gray('  ' + desc))
     })
-    
+
     if (SCRIPTS.length > 0) {
         editJson(path.join(process.cwd(), 'package.json'), pkg => {
             SCRIPTS.forEach(item => {
@@ -45,22 +39,22 @@ function deploy() {
     }
 }
 function printDeployList(arr) {
+    let scripts = ''
     arr.forEach(item => {
-        const {type, from, to, key, value, file, dir, exclude, desc} = item
+        const { type, from, to, key, value, file, dir, exclude, desc } = item
         let str = fillStr(type, W_TYPE)
         if (from && to) str += (fillStr(from, W_FROM) + fillStr(to, W_TO) + desc)
-        if (type === 'SCRIPT') {}
+        if (type === 'SCRIPT') scripts += key + '\n'
         console.log(chalk.gray(str));
     })
+    if (scripts) {
+        console.log('package.json 中插入 scripts 如下命令：')
+        console.log(scripts)
+    }
 }
 
-
-
-
-
-
-// require('child_process').exec(`node ${path.resolve(__dirname, '../.data/res-create.js')} index`, function (error, stdout, stderr) {
-//     error && console.log(error)
-//     stdout && console.log(stdout)
-//     stderr && console.log(stderr)
-// })
+console.log('部署动作有如下操作:')
+printDeployList(DEPLOY_INIT)
+confirm('是否继续？', false).then(bl => {
+    bl && deploy()
+})
