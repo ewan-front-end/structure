@@ -12,27 +12,27 @@ const ROOT_ABS = path.resolve(__dirname, '../../..')
 function deploy() {
     DEPLOY.forEach(({ from, to, desc }) => {
         copySync(path.resolve(ROOT_ABS, from), path.resolve(ROOT, to))
-        console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/') + chalk.white(fillStr(to, W_TO)) + chalk.gray('  ' + desc))
+        console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/' + fillStr(to, W_TO) + desc))
     })
-
+    console.log('\n');
     if (SCRIPTS.length > 0) {
         editJson(path.join(process.cwd(), 'package.json'), pkg => {
             SCRIPTS.forEach(({key, value}) => {pkg.scripts[key] = value})
         }, path => {
-            console.log(chalk.gray('\n修改 ' + path))
-            console.log(chalk.gray('--------------------'))
-            SCRIPTS.forEach(({key, desc}) => {console.log(chalk.green(key) + desc)})
-            console.log(chalk.gray('--------------------\n'))
+            console.log(chalk.gray('在 package.json 中的 scripts 属性中插入如下命令：'))
+            SCRIPTS.forEach(({key, desc}) => {console.log(chalk.gray('  ' + fillStr(key, 20) + desc))})
+            console.log('\n')
         })
     }
 }
 
 console.log(chalk.gray('部署将有如下操作:'))
 DEPLOY.forEach(({ type, from, to, desc }) => {
-    console.log('  ' + fillStr(type, W_TYPE) + fillStr(from, W_FROM) + fillStr(to, W_TO) + desc);
+    console.log(chalk.gray('  ' + fillStr(type, W_TYPE) + fillStr(from, W_FROM) + fillStr(to, W_TO) + desc))
 })
+console.log('\n');
 SCRIPTS.length > 0 && console.log(chalk.gray('package.json 中插入 scripts 如下命令：\n  ' + SCRIPTS.map(e => e.key).join('\n  ')))
-
+console.log('\n');
 confirm('是否继续？', false).then(bl => {
     bl && deploy()
 })

@@ -23,8 +23,9 @@ function undeploy() {
 }
 
 console.log(chalk.gray('卸载将有如下操作:'))
-BACKUPS.forEach(({ to }) => {console.log('备份 ' + to)})
-INSTALL.forEach(({ to }) => {console.log('删除 ' + to)})
+BACKUPS.forEach(({ to }) => {console.log(chalk.gray('  备份 ' + to))})
+INSTALL.forEach(({ to }) => {console.log(chalk.gray('  删除 ' + to))})
+console.log('\n')
 confirm('是否继续？', false).then(bl => {
     bl && undeploy()
 })
