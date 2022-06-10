@@ -44,8 +44,8 @@ function printDeployList(arr) {
         const { type, from, to, key, value, file, dir, exclude, desc } = item
         let str = fillStr(type, W_TYPE)
         if (from && to) str += (fillStr(from, W_FROM) + fillStr(to, W_TO) + desc)
-        if (type === 'SCRIPT') scripts += `&nbsp;&nbsp;${key}\n`
-        if (type !== 'SCRIPT') console.log(chalk.gray(str));
+        if (type === 'SCRIPT') scripts += '  ' + key + '\n'
+        if (type !== 'SCRIPT') console.log('  ' + chalk.gray(str));
     })
     if (scripts) {
         console.log(chalk.gray('package.json 中插入 scripts 如下命令：'))
