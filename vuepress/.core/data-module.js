@@ -1,7 +1,7 @@
 let PATH_DATA = {},
     RES_DATA = {},
     LAYOUT_NAV = [],
-    DATA = require('./data')
+    DATA = require('../data')
 
 function handleChildren(node) {
     let { children, src, appendToNav, title } = node
@@ -63,7 +63,7 @@ function compareDiff(oNode, nNode, key, parentPath) {
 function compare(callback) {
     delete require.cache[require.resolve('./data')]
     setTimeout(() => {
-        let _DATA = require('./data')
+        let _DATA = require('../data')
         compareDiff(DATA, _DATA, '', '')
         const arr = Object.keys(diffPath)
         callback(arr)
