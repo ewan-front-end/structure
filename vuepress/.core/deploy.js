@@ -19,7 +19,7 @@ function deploy() {
         editJson(path.join(process.cwd(), 'package.json'), pkg => {
             SCRIPTS.forEach(({key, value}) => {pkg.scripts[key] = value})
         }, path => {
-            console.log(chalk.gray('在 package.json 中的 scripts 属性中插入如下命令：'))
+            console.log(chalk.gray('在package.json的scripts属性中插入如下命令：'))
             SCRIPTS.forEach(({key, desc}) => {console.log(chalk.gray('  ' + fillStr(key, 20) + desc))})
             console.log('\n')
         })
@@ -31,7 +31,7 @@ DEPLOY.forEach(({ type, from, to, desc }) => {
     console.log(chalk.gray('  ' + fillStr(type, W_TYPE) + fillStr(from, W_FROM) + fillStr(to, W_TO) + desc))
 })
 console.log('\n');
-SCRIPTS.length > 0 && console.log(chalk.gray('package.json 中插入 scripts 如下命令：\n  ' + SCRIPTS.map(e => e.key).join('\n  ')))
+SCRIPTS.length > 0 && console.log(chalk.gray('在package.json的scripts属性中插入如下命令：\n  ' + SCRIPTS.map(e => e.key).join('\n  ')))
 console.log('\n');
 confirm('是否继续？', false).then(bl => {
     bl && deploy()

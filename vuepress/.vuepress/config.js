@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Path = require('path')
-const { LAYOUT_NAV } = require('../.data/index.js')
-const projectsDir = Path.resolve(__dirname, '../.data/projects')
+const { LAYOUT_NAV } = require('../.abstract/.core/data-module.js')
+const projectsDir = Path.resolve(__dirname, '../.abstract/projects')
 if (fs.existsSync(projectsDir)) LAYOUT_NAV.push({"text": "项目", "link": "/projects/"})
 
 module.exports = {

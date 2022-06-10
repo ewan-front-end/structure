@@ -18,7 +18,7 @@ const SCRIPTS = [
     {type: 'SCRIPT', key: 'res:watch', value: 'node docs/.abstract/.core/res-watch.js', desc: '监听构建RES'},
     {type: 'SCRIPT', key: 'projects:deploy', value: 'node docs/.abstract/.core/projects-deploy.js', desc: '部署项目描述'},
     {type: 'SCRIPT', key: 'projects:build', value: 'node docs/.abstract/.core/projects-build.js', desc: '构建项目描述'},
-    {type: 'SCRIPT', key: 'deploy', value: 'node docs/.abstract/.core/deploy.js', desc: '重新部署'},
+    {type: 'SCRIPT', key: 'deploy', value: 'node docs/.abstract/index.js', desc: '重新部署'},
     {type: 'SCRIPT', key: 'undeploy', value: 'node docs/.abstract/.core/undeploy.js', desc: '重新部署'}
 ]
 const UNINSTALL = [
