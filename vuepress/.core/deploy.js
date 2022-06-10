@@ -1,6 +1,6 @@
 const chalk = require('chalk')
 const path = require("path")
-const { DEPLOY_INIT } = require('./maps.js')
+const { DEPLOY } = require('./maps.js')
 const { confirm } = require('../../../.utils/src/node/inquirer-prompt')
 const { copySync, editJson } = require('../../../.utils/src/fs.js')
 const fillStr = (str, len) => `${str}                                                  `.substr(0, len);
@@ -54,7 +54,7 @@ function printDeployList(arr) {
 }
 
 console.log('部署动作有如下操作:')
-printDeployList(DEPLOY_INIT)
+printDeployList(DEPLOY)
 confirm('是否继续？', false).then(bl => {
     bl && deploy()
 })
