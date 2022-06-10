@@ -53,7 +53,7 @@ function printDeployList(arr) {
     }
 }
 
-console.log('部署动作有如下操作:')
+console.log(chalk.gray('部署将有如下操作:'))
 printDeployList(DEPLOY)
 confirm('是否继续？', false).then(bl => {
     bl && deploy()
