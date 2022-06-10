@@ -1,6 +1,6 @@
 const chalk = require('chalk')
 const path = require("path")
-const { INSTALL, BACKUPS } = require('./maps.js')
+const { BACKUPS, INSTALL, UNINSTALL } = require('./maps.js')
 const { confirm } = require('../.utils/src/node/inquirer-prompt')
 const { copySync, delDest } = require('../.utils/src/fs.js')
 const fillStr = (str, len) => `${str}                                                  `.substr(0, len);
@@ -19,12 +19,17 @@ function undeploy() {
         delDest(path.resolve(ROOT, to))
         console.log(chalk.gray('删除 docs/' + to))
     })
+    UNINSTALL.forEach(e => {
+        delDest(path.resolve(ROOT, e))
+        console.log(chalk.gray('删除 ' + e))
+    })
     console.log('\n')
 }
 
 console.log(chalk.gray('卸载将有如下操作:'))
 BACKUPS.forEach(({ to }) => {console.log(chalk.gray('  备份 ' + to))})
 INSTALL.forEach(({ to }) => {console.log(chalk.gray('  删除 ' + to))})
+UNINSTALL.forEach(e => {console.log(chalk.gray('  删除 ' + e))})
 console.log('\n')
 confirm('是否继续？', false).then(bl => {
     bl && undeploy()

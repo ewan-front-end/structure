@@ -21,11 +21,16 @@ const SCRIPTS = [
     {type: 'SCRIPT', key: 'deploy', value: 'node docs/.abstract/.core/deploy.js', desc: '重新部署'},
     {type: 'SCRIPT', key: 'undeploy', value: 'node docs/.abstract/.core/undeploy.js', desc: '重新部署'}
 ]
+const UNINSTALL = [
+    '.abstract/.structure',
+    '.abstract/.utils'
+]
 
 module.exports = {
     DEPLOY: INSTALL.concat(COPY, BACKUPS),
     INSTALL,
     COPY,
     BACKUPS,
-    SCRIPTS
+    SCRIPTS,
+    UNINSTALL
 }
