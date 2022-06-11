@@ -6,8 +6,8 @@ const Printer = {
     SCRIPT: ({ key, desc, param }, indent, excludes) => {
         if (excludes && excludes.includes(key)) return
         indent = ' '.repeat(indent * 2)
-        console.log(indent + chalk.gray(holdStrLen(key, 30) + desc))
-        param && console.log(indent + chalk.gray(holdStrLen(key + ' ' + param, 30) + desc + '指定项'))
+        console.log(indent + chalk.gray('npm run ' + holdStrLen(key, 30) + desc))
+        param && console.log(indent + chalk.gray('npm run ' + holdStrLen(key + ' ' + param, 30) + desc + '指定项'))
     },
     INSTALL: ({ from, to, desc }, indent) => {
         indent = ' '.repeat(indent * 2)

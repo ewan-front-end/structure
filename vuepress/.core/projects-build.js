@@ -20,7 +20,7 @@ const handleContent = (filename) => {
     }
     content = parseCustomBlock(content)
     writeFile(pathTo, `<pre class="code-block">${content}</pre>`, e => {
-        console.log(chalk.gray(pathTo))
+        console.log(chalk.gray(pathTo) + '\n')
     })
     return `- [${info.title || name}](${name})\n`
 }
