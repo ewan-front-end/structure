@@ -44,6 +44,7 @@ function iterateItem(item, indent, excludes) {
 
 module.exports = {
     holdStrLen,
+    fillStr: holdStrLen,
     Printer,
     iterateList,
     iterateItem

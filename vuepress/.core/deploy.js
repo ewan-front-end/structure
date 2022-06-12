@@ -1,18 +1,22 @@
 const chalk = require('chalk')
 const path = require("path")
-const { DEPLOY, SCRIPTS } = require('./maps.js')
+const { DEPLOY, INSTALL, COPY, BACKUPS, SCRIPTS } = require('./maps.js')
 const { confirm } = require('../../../.utils/src/node/inquirer-prompt')
 const { copySync, editJson } = require('../../../.utils/src/fs.js')
-const fillStr = (str, len) => `${str}                                                  `.substr(0, len);
+const { fillStr } = require('./utils')
 
 const W_TYPE = 10, W_FROM = 40, W_TO = 30
 const ROOT = path.resolve(__dirname, '../../../..')
 const ROOT_ABS = path.resolve(__dirname, '../../..')
 
 function deploy() {
-    DEPLOY.forEach(({ from, to, desc }) => {
+    INSTALL.concat(BACKUPS).forEach(({ from, to, desc }) => {
         copySync(path.resolve(ROOT_ABS, from), path.resolve(ROOT, to))
         console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/' + fillStr(to, W_TO) + desc))
+    })
+    COPY.forEach(({ from, to, desc }) => {
+        copySync(path.resolve(ROOT_ABS, from), path.resolve(ROOT, to))
+        console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/' + fillStr(to, W_TO) + desc), {noOverlayFile: true})
     })
     console.log('\n');
     if (SCRIPTS.length > 0) {
