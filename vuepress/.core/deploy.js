@@ -10,15 +10,19 @@ const ROOT = path.resolve(__dirname, '../../../..')
 const ROOT_ABS = path.resolve(__dirname, '../../..')
 
 function deploy() {
-    INSTALL.concat(BACKUPS).forEach(({ from, to, desc }) => {
+    INSTALL.forEach(({ from, to, desc }) => {
         copySync(path.resolve(ROOT_ABS, from), path.resolve(ROOT, to))
         console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/' + fillStr(to, W_TO) + desc))
     })
     COPY.forEach(({ from, to, desc }) => {
+        copySync(path.resolve(ROOT_ABS, from), path.resolve(ROOT, to), {noOverlayFile: true})
+        console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/' + fillStr(to, W_TO) + desc))
+    })
+    BACKUPS.forEach(({ from, to, desc }) => {
         const arr = to.split('/'), name = arr[arr.length - 1], backups = path.resolve(ROOT_ABS, '.backups', name)
         from = path.resolve(ROOT_ABS, from)
         existsSync(backups) && (from = backups)
-        copySync(from, path.resolve(ROOT, to), {noOverlayFile: true})
+        copySync(from, path.resolve(ROOT, to))
         existsSync(backups) && delDest(backups)
         console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/' + fillStr(to, W_TO) + desc))
     })
