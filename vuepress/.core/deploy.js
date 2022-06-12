@@ -15,8 +15,8 @@ function deploy() {
         console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/' + fillStr(to, W_TO) + desc))
     })
     COPY.forEach(({ from, to, desc }) => {
-        copySync(path.resolve(ROOT_ABS, from), path.resolve(ROOT, to))
-        console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/' + fillStr(to, W_TO) + desc), {noOverlayFile: true})
+        copySync(path.resolve(ROOT_ABS, from), path.resolve(ROOT, to), {noOverlayFile: true})
+        console.log(chalk.gray('部署 ' + fillStr(from, W_FROM) + ' 到 docs/' + fillStr(to, W_TO) + desc))
     })
     console.log('\n');
     if (SCRIPTS.length > 0) {
