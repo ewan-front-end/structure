@@ -32,9 +32,11 @@ function iterateList(children, indent, excludes) {
     })
 }
 function iterateItem(item, indent, excludes) {
-    const { name, title, children, type } = item
+    const { name, title, children, type, inverse, space } = item
     if (name && title && children) {
-        console.log(' '.repeat(indent * 2) + chalk.gray(title)) // 打印标题
+        space && console.log('');
+        const tit = inverse ? chalk.gray.inverse(title) : chalk.gray(title)
+        console.log(' '.repeat(indent * 2) + tit) // 打印标题
         iterateList(children, indent + 1, excludes)
     }
     if (type) Printer[type](item, indent + 1, excludes)

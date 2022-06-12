@@ -50,8 +50,8 @@ const Help_DEPLOY = [
     { name: 'UNINSTALL', title: '卸载删除项', children: UNINSTALL }
 ]
 const HELP = [
-    { name: 'SCRIPTS', title: '命令行命令选项', children: HELP_SCRIPTS },
-    { name: 'DEPLOY', title: '部署调度', children: Help_DEPLOY }
+    { name: 'SCRIPTS', title: '命令行命令选项', children: HELP_SCRIPTS, inverse: true },
+    { name: 'DEPLOY', title: '部署调度', children: Help_DEPLOY, inverse: true, space: true }
 ]
 
 module.exports = {
