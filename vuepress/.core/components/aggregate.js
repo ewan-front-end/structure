@@ -4,7 +4,7 @@ const { writeFile } = require('../../.utils/src/fs.js')
 
 let hasNewAnchor = false, LINKS
 try {
-    LINKS = require('../.LINKS.json')
+    LINKS = require('../../.LINKS.json')
 } catch (e) {
     LINKS = {}
 }
@@ -21,7 +21,7 @@ module.exports = (code, path) => {
         hasNewAnchor = true
     }
     if (hasNewAnchor) {
-        writeFile(Path.resolve(__dirname, '../.LINKS.json'), LINKS, path => {
+        writeFile(Path.resolve(__dirname, '../../.LINKS.json'), LINKS, path => {
             console.log(chalk.gray('创建 ' + path))
         })
     }
