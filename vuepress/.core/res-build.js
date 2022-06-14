@@ -10,9 +10,9 @@ if (ARG_ARR.length > 0) {
         let path = node.path
         if (path.match(/\/$/m)) path += 'README'
         if (path === '/README') {
-            createHome(Path.resolve(__dirname, '..' + path), node)
+            createHome(Path.resolve(__dirname, '../..' + path), node)
         } else {
-            createFile(Path.resolve(__dirname, '..' + path), node)
+            createFile(Path.resolve(__dirname, '../..' + path), node)
         }
     } else {
         console.log(`数据结构里不存在资源：${name}.md`)
