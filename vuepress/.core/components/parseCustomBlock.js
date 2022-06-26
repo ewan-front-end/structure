@@ -21,7 +21,7 @@ module.exports = (block, path) => {
         block = block.replace(RegExp.$1, `<span class="browser">${RegExp.$2}</span>\n`)
     }
     // [PROJECT] projects/node-esm
-    while (/^\s*(\[PROJECT\]\s([\w\/\.-_]+))/m.exec(block) !== null) {
+    while (/^\s*(\[PROJECT\]\s([\w\/\.\-_]+))\s*[\r\n]/m.exec(block) !== null) {
         block = block.replace(RegExp.$1, `<span class="project"><img :src="$withBase('/images/icon-code.png')"><i>${RegExp.$2}</i><img :src="$withBase('/images/icon-code-2.png')"></span>\n`)
     }
 
