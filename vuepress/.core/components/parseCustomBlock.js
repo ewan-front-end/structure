@@ -18,11 +18,11 @@ module.exports = (block, path) => {
     }
     // [CHROME] http://10.10.100.33:8080
     while (/^\s*(\[CHROME\]\s([\w:\/\.#\?\&=]+))/m.exec(block) !== null) {
-        block = block.replace(RegExp.$1, `<span class="browser">${RegExp.$2}</span>\n`)
+        block = block.replace(RegExp.$1, `<span class="browser">${RegExp.$2}</span>`)
     }
-    // [PROJECT] projects/node-esm
-    while (/^\s*(\[PROJECT\]\s([\w\/\.\-_]+))\s*[\r\n]/m.exec(block) !== null) {
-        block = block.replace(RegExp.$1, `<span class="project"><img :src="$withBase('/images/icon-code.png')"><i>${RegExp.$2}</i><img :src="$withBase('/images/icon-code-2.png')"></span>\n`)
+    // [PROJECTS] node-esm
+    while (/^\s*(\[PROJECTS\]\s([^\s\n\r]+))\s*[\r\n]/m.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="projects"><i>${RegExp.$2}</i></span>`)
     }
 
     /**
