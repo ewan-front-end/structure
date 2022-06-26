@@ -16,6 +16,10 @@ module.exports = (block, path) => {
     while (/(注[：:](.+))/.exec(block) !== null) {
         block = block.replace(RegExp.$1, `<span class="note">${RegExp.$2}</span>\n`)
     }
+    // [CHROME] http://10.10.100.33:8080
+    while (/^\s*(\[CHROME\]\s([\w:\/\.#\?\&=]+))/m.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="browser">${RegExp.$2}</span>\n`)
+    }
 
     /**
      * 行注释
