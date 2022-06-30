@@ -14,15 +14,19 @@ module.exports = (block, path) => {
 
     // 注：xxxx
     while (/(注[：:](.+))/.exec(block) !== null) {
-        block = block.replace(RegExp.$1, `<span class="note">${RegExp.$2}</span>\n`)
+        block = block.replace(RegExp.$1, `<span class="format-note">${RegExp.$2}</span>\n`)
     }
     // [CHROME] http://10.10.100.33:8080
     while (/^\s*(\[CHROME\]\s([\w:\/\.#\?\&=]+))/m.exec(block) !== null) {
-        block = block.replace(RegExp.$1, `<span class="browser">${RegExp.$2}</span>`)
+        block = block.replace(RegExp.$1, `<span class="format-url"><i>${RegExp.$2}</i></span>`)
     }
     // [PROJECTS] node-esm
     while (/^\s*(\[PROJECTS\]\s([^\s\n\r]+))\s*[\r\n]/m.exec(block) !== null) {
-        block = block.replace(RegExp.$1, `<span class="projects"><i>${RegExp.$2}</i></span>`)
+        block = block.replace(RegExp.$1, `<span class="format-projects"><i>${RegExp.$2}</i></span>`)
+    }
+    // [NPM] npm i @angg/dict
+    while (/^\s*(\[NPM\]\s([^\n\r]+))[\r\n]/m.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="format-npm"><i>${RegExp.$2}</i></span>`)
     }
 
     /**
