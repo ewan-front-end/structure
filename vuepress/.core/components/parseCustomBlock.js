@@ -20,13 +20,18 @@ module.exports = (block, path) => {
     while (/^\s*(\[CHROME\]\s([\w:\/\.#\?\&=]+))/m.exec(block) !== null) {
         block = block.replace(RegExp.$1, `<span class="format-url"><i>${RegExp.$2}</i></span>`)
     }
-    // [PROJECTS] node-esm
-    while (/^\s*(\[PROJECTS\]\s([^\s\n\r]+))\s*[\r\n]/m.exec(block) !== null) {
-        block = block.replace(RegExp.$1, `<span class="format-projects"><i>${RegExp.$2}</i></span>`)
+
+    // [PROJECT node-esm] 
+    while (/(\[PROJECT\s([\w-_\/]+)\])/.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="format-project"><i>${RegExp.$2}</i></span>`)
     }
-    // [NPM] npm i @angg/dict
-    while (/^\s*(\[NPM\]\s([^\n\r]+))[\r\n]/m.exec(block) !== null) {
+    // [NPM npm i @angg/dict]
+    while (/(\[NPM\s([\w\s-_@\/]+)\])/.exec(block) !== null) {
         block = block.replace(RegExp.$1, `<span class="format-npm"><i>${RegExp.$2}</i></span>`)
+    }
+    // [GIT https://github.com/ewan-front-end/projects/tree/master/npm-hi]
+    while (/(\[GIT\s([\w-_\/\:\.]+)\])/.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="format-git"><a href="${RegExp.$2}" target="_blank">►</a></span>`)
     }
 
     /**
