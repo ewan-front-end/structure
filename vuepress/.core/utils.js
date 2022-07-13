@@ -6,20 +6,20 @@ const Printer = {
     SCRIPT: ({ key, desc, param }, indent, excludes) => {
         if (excludes && excludes.includes(key)) return
         indent = ' '.repeat(indent * 2)
-        console.log(indent + chalk.gray('npm run ' + holdStrLen(key, 30) + desc))
-        param && console.log(indent + chalk.gray('npm run ' + holdStrLen(key + ' ' + param, 30) + desc + '指定项'))
+        console.log(indent + chalk.gray(holdStrLen('npm run ' + key, W_FROM) + desc))
+        param && console.log(indent + chalk.gray(holdStrLen('npm run ' + key + ' ' + param, W_FROM) + desc + '指定项'))
     },
     INSTALL: ({ from, to, desc }, indent) => {
         indent = ' '.repeat(indent * 2)
-        console.log(indent + chalk.gray(`${holdStrLen('安装' + from, W_FROM)}到${holdStrLen(to, W_TO)}${desc}`))
+        console.log(indent + chalk.gray(`${holdStrLen(from, W_FROM)}安装到${holdStrLen(to, W_TO)}${desc}`))
     },
     COPY: ({ from, to, desc }, indent) => {
         indent = ' '.repeat(indent * 2)
-        console.log(indent + chalk.gray(`${holdStrLen('拷贝' + from, W_FROM)}到${holdStrLen(to, W_TO)}${desc}`))
+        console.log(indent + chalk.gray(`${holdStrLen(from, W_FROM)}拷贝到${holdStrLen(to, W_TO)}${desc}`))
     },
     BACKUPS: ({ from, to, desc }, indent) => {
         indent = ' '.repeat(indent * 2)
-        console.log(indent + chalk.gray(`${holdStrLen('备份' + from, W_FROM)}到${holdStrLen(to, W_TO)}${desc}`))
+        console.log(indent + chalk.gray(`${holdStrLen(from, W_FROM)}备份到${holdStrLen(to, W_TO)}${desc}`))
     },
     UNINSTALL: (item, indent) => {
         indent = ' '.repeat(indent * 2)
