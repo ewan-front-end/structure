@@ -19,6 +19,7 @@ console.log(chalk.gray(table) + '\n')
 const firstTimeUseText = `
 第一次使用：
     比如第一次克隆到本地
-    1. 需全局安装：npm i concurrently -g
+    1. sudo npm i concurrently -g
+    2. npm run data:build
 `
 console.log(chalk.gray(firstTimeUseText) + '\n')
