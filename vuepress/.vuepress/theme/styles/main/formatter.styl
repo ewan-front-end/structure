@@ -214,21 +214,69 @@
     font-size: 18px;
     font-weight: bold;
 
-    img {
-        vertical-align: baseline;
+    .img {
+        display: inline-block;
+        width: 20px;
+        text-align: center;
+        vertical-align: middle;
         line-height: 16px;
         cursor: pointer;
         margin-right: 3px;
         backface-visibility: hidden;
-        -webkit-backface-visibility: hidden; /* Chrome 和 Safari */
-        -moz-backface-visibility: hidden; /* Firefox */
-        -ms-backface-visibility: hidden; /* Internet Explorer */
         background-color: #3eaf7c;
-        padding: 2px 3px;
+        border-radius: 15px;
+        
+        img {
+            line-height: 100%;
+            vertical-align: middle;
+        }
+    }
+    &.anchor1 {
+        .img {line-height: 20px;}
+    }
+    &.anchor2 {
+        line-height: 24px;
+        font-size: 22px;
+        .img {line-height: 24px;}
+    }
+    &.anchor3 {
+        line-height: 28px;
+        font-size: 26px;
+        .img {line-height: 28px;}
+    }
+    &.anchor4 {
+        line-height: 30px;
+        font-size: 30px;
+        .img {line-height: 30px;}
+    }
+    &.anchor5 {
+        line-height: 34px;
+        font-size: 34px;
+        .img {line-height: 34px;}
+    }
+    &.anchor6 {
+        line-height: 38px;
+        font-size: 38px;
+        .img {width: 22px; line-height: 38px;}
+    }
+    &.anchor7 {
+        line-height: 42px;
+        font-size: 42px;
+        .img {width: 24px;line-height: 42px;}
+    }
+    &.anchor8 {
+        line-height: 46px;
+        font-size: 46px;
+        .img {width: 26px;line-height: 46px;}
+    }
+    &.anchor9 {
+        line-height: 50px;
+        font-size: 50px;
+        .img {width: 28px; line-height: 50px;}
     }
 
     span {
-        vertical-align: baseline;
+        vertical-align: middle;
 
         &:nth-of-type(2) {
             display: none;

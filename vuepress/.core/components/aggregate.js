@@ -18,8 +18,8 @@ module.exports = (code, path) => {
     while (/(\[LINK([0-9]?)\s(.+?)#([\w-]+?)\])/.exec(code) !== null) {
         LINKS[RegExp.$4] = { path, title: RegExp.$3 }
         let className = 'anchor'
-        if (RegExp.$2) className += ' sz' + RegExp.$2
-        code = code.replace(RegExp.$1, `<a id="${RegExp.$4}" class="${className}"><img :src="$withBase('/images/anchor4.png')"><span>${RegExp.$3}</span><span>#${RegExp.$4}</span></a>`)
+        if (RegExp.$2) className += ' anchor' + RegExp.$2
+        code = code.replace(RegExp.$1, `<a id="${RegExp.$4}" class="${className}"><i class="img"><img :src="$withBase('/images/anchor4.png')"></i><span>${RegExp.$3}</span><span>#${RegExp.$4}</span></a>`)
         hasNewAnchor = true
     }
     if (hasNewAnchor) {

@@ -140,36 +140,44 @@ module.exports = (block, path) => {
      * ### TITLE H3 16
      * #### TITLE H4 18
      * ...
-     * [####]{color:#fff}(bd) TITLE INVERT
+     * [####]{color:#fff}(bd) TITLE INVERT 反相样式标题
+     * [####主题]{color:#fff}(bd) 主题标题
      * 应用环境：独占一行
      */
     const REG_TIT_STR = regexpPresetParse([
         `\\x20*`,                   // 0任意空格
         {
             FORMAT: [
-                { INVERT: `\\[?` },       // 反相开始 [
+                { INVERT: `\\[?` },        // 反相开始 [
                 { LEVEL: `#{2,15}` },      // 标题字号 #-######
-                `\\]?`,                 // 反相结束 ]
-                { STYLE: REG_STYLE_STR }, // 区配样式 {color: #fff}
-                { CLASS: REG_CLASS_STR }, // 匹配类名 (bd)
-                `\\s`,                  // 一个空格
-                { TEXT: `[^\\n\\r\\{]+` } // 标题文本
+                `\\]?`,                    // 反相结束 ]
+                { THEME: `([^#\\n\\r]+\\])?` },   // 主题 ]
+                { STYLE: REG_STYLE_STR },  // 区配样式 {color: #fff}
+                { CLASS: REG_CLASS_STR },  // 匹配类名 (bd)
+                `\\s`,                     // 一个空格
+                { TEXT: `[^\\n\\r\\{]+` }  // 标题文本
             ]
         }
     ])
     const REG_TIT = new RegExp(REG_TIT_STR.value)
     let titMatch
     while ((titMatch = REG_TIT.exec(block)) !== null) {
-        let { FORMAT, INVERT, LEVEL, STYLE, CLASS, TEXT } = titMatch.groups
+        let { FORMAT, INVERT, LEVEL, STYLE, CLASS, TEXT, THEME } = titMatch.groups
         let classStr = `h${LEVEL.length}`
         if (INVERT) {
-            classStr += ' bg3 cf'
-            if (TEXT[0] !== ' ') TEXT = ' ' + TEXT
-            if (TEXT[TEXT.length - 1] !== ' ') TEXT = TEXT + ' '
+            if (THEME) {
+                let styleStr = `class="bg3 cf"`
+                STYLE && (styleStr += ` style="${STYLE.replace('{', '').replace('}', '')}"`)
+                TEXT = `<span ${styleStr}> ${THEME.slice(0, -1)} </span> ${TEXT}`
+            } else {
+                classStr += ' bg3 cf'
+                if (TEXT[0] !== ' ') TEXT = ' ' + TEXT
+                if (TEXT[TEXT.length - 1] !== ' ') TEXT = TEXT + ' '
+            }
         }
         CLASS && (classStr += ' ' + CLASS.replace('(', '').replace(')', ''))
-        let str = `class="${classStr}"`, content = TEXT
-        STYLE && (str += ` style="${STYLE.replace('{', '').replace('}', '')}"`)
+        let str = `class="${classStr}"`, content = TEXT;
+        (STYLE && !THEME) && (str += ` style="${STYLE.replace('{', '').replace('}', '')}"`)
         block = block.replace(FORMAT, `<span ${str}>${TEXT}</span>`)
         //Search.add(path, TEXT)
     }
