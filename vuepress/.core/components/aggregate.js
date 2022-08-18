@@ -12,12 +12,14 @@ try {
 module.exports = (code, path) => {
     /**
      * 链接锚点
-     * 格式：[LINK TITLE#ID]
-     * 例子：[LINK MySQL安装#MySQL_install]
+     * 格式：[LINK[字号] TITLE#ID]
+     * 例子：[LINK MySQL安装#MySQL_install] 或 [LINK2 MySQL安装#MySQL_install]
      */
-    while (/(\[LINK\s(.+?)#([\w-]+?)\])/.exec(code) !== null) {
-        LINKS[RegExp.$3] = { path, title: RegExp.$2 }
-        code = code.replace(RegExp.$1, `<a id="${RegExp.$3}" class="anchor"><img :src="$withBase('/images/anchor4.png')"><span>${RegExp.$2}</span><span>#${RegExp.$3}</span></a>`)
+    while (/(\[LINK([0-9]?)\s(.+?)#([\w-]+?)\])/.exec(code) !== null) {
+        LINKS[RegExp.$4] = { path, title: RegExp.$3 }
+        let className = 'anchor'
+        if (RegExp.$2) className += ' sz' + RegExp.$2
+        code = code.replace(RegExp.$1, `<a id="${RegExp.$4}" class="${className}"><img :src="$withBase('/images/anchor4.png')"><span>${RegExp.$3}</span><span>#${RegExp.$4}</span></a>`)
         hasNewAnchor = true
     }
     if (hasNewAnchor) {
@@ -28,23 +30,24 @@ module.exports = (code, path) => {
 
     /**
      * 链接引用
-     * 格式：[LINK ID:NEW_TITLE]
-     * 例子：[LINK MySQL_install] 或 [LINK MySQL_install:重命名]
+     * 格式：[LINK[字号] ID:NEW_TITLE]
+     * 例子：[LINK MySQL_install] 或 [LINK MySQL_install:重命名] 或 [LINK1 MySQL_install]
      */
-    function createAnchor(ALL, KEY, anchor, TIT) {
+    function createAnchor(ALL, KEY, anchor, TIT, SIZE) {
         if (anchor) {
             const isSelf = anchor.path === path
             const pathname = /\/$/m.test(anchor.path) ? anchor.path : anchor.path + '.html'
             const href = isSelf ? `#${KEY}` : `${pathname}#${KEY}`
             const title = TIT || anchor.title
-            const content = isSelf ? `<a href="${href}">${title}</a>` : `<a href="${href}" target="_blank">${title}</a>`
+            const className = SIZE ? ' class="sz' + SIZE + '"' : ''
+            const content = isSelf ? `<a href="${href}"${className}>${title}</a>` : `<a href="${href}" target="_blank"${className}>${title}</a>`
             code = code.replace(ALL, content)
         } else {
             code = code.replace(ALL, `锚点[${KEY}]不存在`)
         }
     }
-    while (/(\[LINK\s([^#:\n\r]+)\])/.exec(code) !== null) { createAnchor(RegExp.$1, RegExp.$2, LINKS[RegExp.$2], null) }
-    while (/(\[LINK\s([^#:\n\r]+):([^#:\n\r]+)\])/.exec(code) !== null) { createAnchor(RegExp.$1, RegExp.$2, LINKS[RegExp.$2], RegExp.$3) }
+    while (/(\[LINK([0-9]?)\s([^#:\n\r]+)\])/.exec(code) !== null) { createAnchor(RegExp.$1, RegExp.$3, LINKS[RegExp.$3], null, RegExp.$2) }
+    while (/(\[LINK([0-9]?)\s([^#:\n\r]+):([^#:\n\r]+)\])/.exec(code) !== null) { createAnchor(RegExp.$1, RegExp.$3, LINKS[RegExp.$3], RegExp.$4, RegExp.$2) }
 
     return code
 }

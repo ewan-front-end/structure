@@ -14,7 +14,24 @@ module.exports = (block, path) => {
 
     // 注：xxxx
     while (/(注[：:](.+))/.exec(block) !== null) {
-        block = block.replace(RegExp.$1, `<span class="note">${RegExp.$2}</span>\n`)
+        block = block.replace(RegExp.$1, `<span class="format-note">${RegExp.$2}</span>\n`)
+    }
+    // [CHROME] http://10.10.100.33:8080
+    while (/^\s*(\[CHROME\]\s([\w:\/\.#\?\&=]+))/m.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="format-url"><i>${RegExp.$2}</i></span>`)
+    }
+
+    // [PROJECT node-esm] 
+    while (/(\[PROJECT\s([\w-_\/]+)\])/.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="format-project"><i>${RegExp.$2}</i></span>`)
+    }
+    // [NPM npm i @angg/dict]
+    while (/(\[NPM\s([\w\s-_@\/]+)\])/.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="format-npm"><i>${RegExp.$2}</i></span>`)
+    }
+    // [GIT https://github.com/ewan-front-end/projects/tree/master/npm-hi]
+    while (/(\[GIT\s([\w-_\/\:\.]+)\])/.exec(block) !== null) {
+        block = block.replace(RegExp.$1, `<span class="format-git"><a href="${RegExp.$2}" target="_blank">►</a></span>`)
     }
 
     /**
