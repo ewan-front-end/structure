@@ -51,6 +51,18 @@ export default {
                 setChildreVal(children, val)
             })
         })
+        // 选项卡
+        const tabElements = document.querySelectorAll('.format-tab')
+        tabElements.forEach(ele => {
+            ele.addEventListener('click', e => {
+                const container = e.currentTarget
+                const tar = e.target
+                const tarIndex = tar.getAttribute('data-index')
+                if (tar.className === 'tab-title-item'){
+                    container.className = 'format-tab active' + tarIndex
+                }
+            })
+        })
     },
     // 生产环境的构建结束后被调用
     async generated (pagePaths) {

@@ -5,12 +5,15 @@ const detail = require('./widgets/detail.js')
 const REG_STYLE_STR = `(\\{[\\w\\s-;:'"#]+\\})?` // color: #f00; font-size: 14px
 const REG_CLASS_STR = `(\\([\\w\\s-]+\\))?`      // bd sz-16 c-0
 const { CUSTOM_BLOCK_CUSTOM_CHAR } = require('../../config.js')
+const tab = require('./layout/tab.js')
 
 module.exports = (block, path) => {
     block = block.replace(/\{\{/g, `{TEMPLATE{`)
     block = block.replace(/\}\}/g, `}TEMPLATE}`)
     block = block.replace(/\</g, "&lt;").replace(/\>/g, "&gt;")
     block = aggregate(block, path)
+
+    block = tab(block)
 
     // 注：xxxx
     while (/(注[：:](.+))/.exec(block) !== null) {

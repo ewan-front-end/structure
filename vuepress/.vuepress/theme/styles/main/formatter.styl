@@ -460,3 +460,47 @@
         padding: 0 3px;
     }
 }
+// 选项卡
+.format-tab {
+    .tab-title-box {
+        .tab-title-item {
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 20px;
+            padding: 0 5px;
+            background-color: #ddd;
+            margin-right: 5px;
+        }
+    }
+    .tab-content-box {
+        .tab-content-item {
+            display: none;
+        }   
+    }
+    &.active0 .tab-title-box .tab-title-item[data-index="0"],
+    &.active1 .tab-title-box .tab-title-item[data-index="1"],
+    &.active2 .tab-title-box .tab-title-item[data-index="2"],
+    &.active3 .tab-title-box .tab-title-item[data-index="3"],
+    &.active4 .tab-title-box .tab-title-item[data-index="4"],
+    &.active5 .tab-title-box .tab-title-item[data-index="5"],
+    &.active6 .tab-title-box .tab-title-item[data-index="6"],
+    &.active7 .tab-title-box .tab-title-item[data-index="7"],
+    &.active8 .tab-title-box .tab-title-item[data-index="8"],
+    &.active9 .tab-title-box .tab-title-item[data-index="9"] {
+        background-color: #333;
+        color: #fff;
+        font-weight: bold;
+    }
+    &.active0 .tab-content-box .tab-content-item[data-index="0"],
+    &.active1 .tab-content-box .tab-content-item[data-index="1"],
+    &.active2 .tab-content-box .tab-content-item[data-index="2"],
+    &.active3 .tab-content-box .tab-content-item[data-index="3"],
+    &.active4 .tab-content-box .tab-content-item[data-index="4"],
+    &.active5 .tab-content-box .tab-content-item[data-index="5"],
+    &.active6 .tab-content-box .tab-content-item[data-index="6"],
+    &.active7 .tab-content-box .tab-content-item[data-index="7"],
+    &.active8 .tab-content-box .tab-content-item[data-index="8"],
+    &.active9 .tab-content-box .tab-content-item[data-index="9"] {
+        display: block;
+    } 
+}
