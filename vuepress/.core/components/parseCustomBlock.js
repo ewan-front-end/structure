@@ -38,17 +38,17 @@ module.exports = (block, path) => {
     }
 
     /**
-     * 行注释
+     * 单行注释
      * 多匹配一个前置空格 替换时空格移到标签 防止被全等注释二次替换
-     * 如：// 注释 // 注释  解析成：
-     * 错误：<span class="comment"><span class="comment"> // 注释</span></span> // 注释
-     * 正确： <span class="comment">// 注释</span></span> <span class="comment">// 注释</span></span>
+     * // 保留注释符
+     * # 忽略注释符
      */
-    const matchComment = block.match(/\s\d?\/\/[^\n\r]+/g) || [];
-    matchComment.forEach(e => {
-        let colorClass = '', _e = e.trim(), firstWord = _e.substr(0, 1)
-        if (!isNaN(firstWord)) { _e = _e.replace(firstWord, ''); colorClass = ' color' + firstWord }
-        block = block.replace(e, ` <span class="comment${colorClass}">${_e}</span>`)
+    const sigleLineComment = block.match(/\s\d?(#|\/\/)\s[^\n\r]+/g) || [];
+    sigleLineComment.forEach(content => {
+        /\s(\d?)(#|\/\/)\s([^\n\r]+)/.exec(content)
+        let className = 'comment', contentFormat = RegExp.$2 === '//' ? `// ${RegExp.$3}` : RegExp.$3
+        if (RegExp.$1) className += ' color' + RegExp.$1
+        block = block.replace(content, ` <span class="${className}">${contentFormat}</span>`)
     })
     // /* 注释 */
     const matchComment2 = block.match(/\d?\/\*[\s\S]*?\*\//g) || [];
