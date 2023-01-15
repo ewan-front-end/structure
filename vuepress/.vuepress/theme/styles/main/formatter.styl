@@ -389,20 +389,37 @@
     }
 }
 .format-error {
-    color: #e33;
-    line-height: 16px;
-    &::before {
-        content: '✗';
+    .header {
+        color: #e33;
+        line-height: 16px;
+        &::before {
+            content: '✗';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            background-color: #f33;
+            color: #fff;
+            font-size: 12px;
+            border-radius: 10px;
+            transform: scale(0.6)
+        }
+    }
+    &.resolve .header::after {
+        content: '⊕';
         display: inline-block;
         width: 16px;
         height: 16px;
         line-height: 16px;
         text-align: center;
-        background-color: #f33;
-        color: #fff;
         font-size: 12px;
         border-radius: 10px;
-        transform: scale(0.6)
+    }
+    .content {
+        display: none;
+        color: #aaa;
+        padding-left: 16px;
     }
 }
 .format-url {

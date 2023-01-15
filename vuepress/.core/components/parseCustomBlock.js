@@ -16,12 +16,15 @@ module.exports = (block, path) => {
     block = tab(block)
 
     // 注：xxxx
-    while (/(注[：:](.+))/.exec(block) !== null) {
+    while (/(注[：:]([^\n\r]+)[\n\r])/.exec(block) !== null) {
         block = block.replace(RegExp.$1, `<span class="format-note">${RegExp.$2}</span>\n`)
     }
     // [Error] 错误信息
-    while (/(\[Error\]\s([^\n\r]+))/.exec(block) !== null) {
-        block = block.replace(RegExp.$1, `<span class="format-error">${RegExp.$2}</span>\n`)
+    // [Error] 错误信息☒123456☑
+    while (/(\[Error\]\s([^\n\r☒]+)[\n\r]?(☒([^☑]+)☑)?[\n\r])/.exec(block) !== null) {
+        const className = RegExp.$4 ? 'format-error resolve' : 'format-error'
+        const resolveContent = RegExp.$4 ? `<div class="content">${RegExp.$4}</div>` : ''
+        block = block.replace(RegExp.$1, `<span class="${className}"><span class="header">${RegExp.$2}</span>${resolveContent}</span>\n`)
     }
     // [CHROME] http://10.10.100.33:8080
     while (/^\s*(\[CHROME\]\s([\w:\/\.#\?\&=]+))/m.exec(block) !== null) {

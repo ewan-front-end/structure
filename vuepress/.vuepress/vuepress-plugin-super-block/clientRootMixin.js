@@ -26,6 +26,19 @@ export default {
             })
         })
 
+        const $errors = document.querySelectorAll('.format-error')
+        $errors.forEach(dom => {
+            const header = dom.querySelector('.header')
+            const content = dom.querySelector('.content')
+            if (content) {
+                header.style.cursor = 'pointer'
+                header.addEventListener('click', e => {
+                    const display = getComputedStyle(content).display
+                    content.style.display = display === 'none' ? 'block' : 'none'
+                })
+            }
+        })
+
         const $tree_switch = document.querySelectorAll('.tree .switch')
         $tree_switch.forEach(dom => {
             dom.addEventListener('click', e => {
