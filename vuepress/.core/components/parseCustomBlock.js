@@ -47,13 +47,15 @@ module.exports = (block, path) => {
     /**
      * 单行注释
      * 多匹配一个前置空格 替换时空格移到标签 防止被全等注释二次替换
-     * // 保留注释符
-     * # 忽略注释符
+     * // 单行注释
+     * # 单行注释
+     * //-单行注释忽略注释符
+     * #-单行注释忽略注释符
      */
-    const sigleLineComment = block.match(/\s\d?(#|\/\/)\s[^\n\r]+/g) || [];
+    const sigleLineComment = block.match(/\s\d?(#|\/\/)[\s-][^\n\r]+/g) || [];
     sigleLineComment.forEach(content => {
-        /\s(\d?)(#|\/\/)\s([^\n\r]+)/.exec(content)
-        let className = 'comment', contentFormat = RegExp.$2 === '//' ? `// ${RegExp.$3}` : RegExp.$3
+        /\s(\d?)(#|\/\/)([\s-])([^\n\r]+)/.exec(content)
+        let className = 'comment', contentFormat = RegExp.$3 === '-' ? RegExp.$4 : `${RegExp.$2} ${RegExp.$4}`
         if (RegExp.$1) className += ' color' + RegExp.$1
         block = block.replace(content, ` <span class="${className}">${contentFormat}</span>`)
     })
