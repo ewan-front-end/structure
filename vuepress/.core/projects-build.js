@@ -25,20 +25,26 @@ const handleContent = (filename) => {
     return `- [${info.title || name}](${name})\n`
 }
 const createDocs = (dest) => {
+    const readmePath = Path.resolve(dirTo, 'README.md')
+    let linkHtml = ''
     if (dest) {
         if (!dest.includes('.md')) dest += '.md'
-        handleContent(dest)
+        const link = handleContent(dest)
+        const fn = dest.replace('.md', '')
+        const reg = new RegExp('(-\\s\\[[^\\]\\n\\r]+\\]\\('+fn+'\\))')
+        let rm = readFile(readmePath, true) || ''
+        console.log(dest, reg.exec(rm));
+        linkHtml = reg.exec(rm) ? rm.replace(RegExp.$1, link) : rm + link
+        console.log(linkHtml);
     } else {
         const files = fs.readdirSync(dirFrom)
-        const readmePath = Path.resolve(dirTo, 'README.md')
-        let linkHtml = ''
         files.forEach(filename => {
             linkHtml += handleContent(filename)
         })
-        writeFile(readmePath, linkHtml, e => {
-            console.log(chalk.gray(readmePath))
-        })
     }
+    writeFile(readmePath, linkHtml, e => {
+        console.log(chalk.gray(readmePath))
+    })
 }
 
 ARG_ARR.length > 0 ? createDocs(ARG_ARR[0]) : createDocs()
