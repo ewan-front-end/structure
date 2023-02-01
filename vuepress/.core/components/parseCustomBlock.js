@@ -21,7 +21,7 @@ module.exports = (block, path) => {
     }
     // [Error] 错误信息
     // [Error] 错误信息☒123456☑
-    while (/(\[Error\]\s([^\n\r☒]+)[\n\r]?(☒([^☑]+)☑)?[\n\r])/.exec(block) !== null) {
+    while (/(\[Error\]\s([^\n\r☒]+)[\n\r]?(☒([^☑☒]+)☑)?[\n\r])/.exec(block) !== null) {
         const className = RegExp.$4 ? 'format-error resolve' : 'format-error'
         const resolveContent = RegExp.$4 ? `<div class="content">${RegExp.$4}</div>` : ''
         block = block.replace(RegExp.$1, `<span class="${className}"><span class="header">${RegExp.$2}</span>${resolveContent}</span>\n`)
