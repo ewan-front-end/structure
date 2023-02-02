@@ -178,11 +178,11 @@ module.exports = (block, path) => {
         let classStr = `h${LEVEL.length}`
         if (INVERT) {
             if (THEME) {
-                let styleStr = `class="bg3 cf"`
+                let styleStr = `class="dark-bg cf"`
                 STYLE && (styleStr += ` style="${STYLE.replace('{', '').replace('}', '')}"`)
                 TEXT = `<span ${styleStr}> ${THEME.slice(0, -1)} </span> ${TEXT}`
             } else {
-                classStr += ' bg3 cf'
+                classStr += ' dark-bg cf'
                 if (TEXT[0] !== ' ') TEXT = ' ' + TEXT
                 if (TEXT[TEXT.length - 1] !== ' ') TEXT = TEXT + ' '
             }
