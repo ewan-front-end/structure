@@ -78,7 +78,7 @@ module.exports = (block, path) => {
         block = block.replace(RegExp.$1, `<a href="${RegExp.$3}" target="_blank">${RegExp.$2}</a>`)
     }
     while (/^\s*(-\s([^\n\r]+))/m.exec(block) !== null) {
-        block = block.replace(RegExp.$1, `● <strong>${RegExp.$2}</strong>`);
+        block = block.replace(RegExp.$1, `☀<strong>${RegExp.$2}</strong>`);
         //Search.add(path, RegExp.$2)
     }
     while (/(\*\*([0-9a-zA-Z\u4e00-\u9fa5_-]+)\*\*)/.exec(block) !== null) {
