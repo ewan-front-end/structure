@@ -178,11 +178,11 @@ module.exports = (block, path) => {
         let classStr = `h${LEVEL.length}`
         if (INVERT) {
             if (THEME) {
-                let styleStr = `class="dark-bg cf"`
+                let styleStr = `class="f ww"`
                 STYLE && (styleStr += ` style="${STYLE.replace('{', '').replace('}', '')}"`)
                 TEXT = `<span ${styleStr}> ${THEME.slice(0, -1)} </span> ${TEXT}`
             } else {
-                classStr += ' dark-bg cf'
+                classStr += ' f ww'
                 if (TEXT[0] !== ' ') TEXT = ' ' + TEXT
                 if (TEXT[TEXT.length - 1] !== ' ') TEXT = TEXT + ' '
             }
@@ -217,7 +217,7 @@ module.exports = (block, path) => {
             const $ALL = RegExp.$1, $STYLE = RegExp.$5, $CLASS = RegExp.$3 || RegExp.$7 || '', $VALUE = RegExp.$8, styleStr = $STYLE ? ` style="${$STYLE}"` : ''
             content = content.replace($ALL, `<span class="input ${$CLASS}"${styleStr}>${$VALUE}</span>`)
         }
-        // [BTN|正常置灰] [BTN>主题激活] [BTNbg3 cf|自定义类]
+        // [BTN|正常置灰] [BTN>主题激活] [BTNbg3 f|自定义类]
         while (/(\[BTN([\w\s-]*)([\>\|]|&gt;)(.+?)\])/.exec(content) !== null) {
             const $ALL = RegExp.$1, $CLASS = RegExp.$2, $TYPE = RegExp.$3, $VAL = RegExp.$4
             let classStr = 'button'
